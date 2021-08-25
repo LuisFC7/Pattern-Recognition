@@ -1,1 +1,73 @@
 
+clc % limpia pantalla
+clear all % limpia todo
+close all %cierra todo
+warning off all  % apaga los warnings
+
+newcolors = {'r','g','b','c','m','y','#0072BD','#D95319','#EDB120','#7E2F8E','#77AC30','#4DBEEE','#A2142F'};
+
+nc=input('¿Cuántas clases quieres?   ');%nc-> número de clases
+npc=input('¿Cuántas repeticiones de clase quieres?   ');%npc-> número de repeticiones por clase
+
+%nclss -> n clases
+%mdclss -> medias
+%dstclss -> distancias
+
+for f1=1:nc
+   ncls(:,:,f1)=randn(2,npc);
+end
+    fprintf('\n');
+for f1=1:nc
+   fprintf('dame el centroide de la clase %d   ',f1);
+   temCent=input('');
+   ncls(:,:,f1)=ncls(:,:,f1)+temCent;
+end
+    fprintf('\n');
+for f1=1:nc
+   fprintf('dame la disperción de la clase %d   ',f1);
+   temCent=input('');
+   ncls(:,:,f1)=ncls(:,:,f1)*temCent;
+end
+    fprintf('\n');
+%calculo de medias
+for f1=1:nc
+   mdclss(:,f1)=mean(ncls(:,:,f1),2);
+end
+
+    %TODO: Inicio loop
+    
+vx=input('dame coordenada del vector en x=  ');
+vy=input('dame coordenada del vector en y=  ');
+vector=[vx;vy];
+fprintf('\n');
+
+%toma de decision
+for f1=1:nc
+   dstclss(:,f1)=norm(vector-mdclss(:,f1));
+end
+minimo=min(min(dstclss));
+valor=find(dstclss==minimo);
+fprintf('El vector  pertenece a la clase %d\n',valor)
+
+%graficado
+figure(1)
+grid on
+hold on
+txtlegend={};
+for f1=1:nc
+   plot(ncls(1,:,f1),ncls(2,:,f1),'ko','MarkerSize',10,'MarkerFaceColor',newcolors{f1})
+   name=sprintf('Clase %d',f1);
+   txtlegend=[txtlegend,name];
+end
+plot(vector(1,:),vector(2,:),'kp','MarkerSize',11,'MarkerFaceColor','w')
+txtlegend=[txtlegend,'Vector'];
+legend(txtlegend);
+title('Proy1 test');
+hold off %poder pintar de 0
+plot(vector(1,:),vector(2,:),'kp','MarkerSize',11,'MarkerFaceColor','w')
+
+%
+
+%TODO: Preguntar: ingresar otro vector
+
+%TODO: Cerrar loop
