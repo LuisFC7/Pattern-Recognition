@@ -33,39 +33,10 @@ for f1=1:nc
    mdclss(:,f1)=mean(ncls(:,:,f1),2);
 end
 
-    %TODO: Inicio loop 
-vx=input('Coordenada del vector en x=  ');
-vy=input('Coordenada del vector en y=  ');
-vector=[vx;vy];
-fprintf('\n');
-
-%toma de decision
-for f1=1:nc
-   dstclss(:,f1)=norm(vector-mdclss(:,f1));%calculo de la distancia
-end
-minimo=min(min(dstclss));
-valor=find(dstclss==minimo);
-fprintf('El vector  pertenece a la clase %d\n',valor)
-
-%graficado
-figure(1)
-grid on
-hold on
-txtlegend={};
-for f1=1:nc
-   plot(ncls(1,:,f1),ncls(2,:,f1),'ko','MarkerSize',10,'MarkerFaceColor',newcolors{f1})%impresion de clases
-   plot(vector(1,:),vector(2,:),'kp','MarkerSize',10,'MarkerFaceColor','w')%impresión de punto de vector
-   name=sprintf('Clase %d',f1);
-   txtlegend=[txtlegend,name];
-   xlabel('Coordenada X');
-   ylabel('Coordenada Y')
-   title('Gráfica de Clases y vector')
-end
-
-%0=No 1=Si
- fprintf('\n');
-flag=input('¿Desea agregar otro vector? 0 = No / 1 = Si \n');
+% inicio loop
+flag=1;
 while flag==1
+    %Entrada del vector desconocido
     vx=input('Coordenada del vector en x=  ');
     vy=input('Coordenada del vector en y=  ');
     vector=[vx;vy];
@@ -73,40 +44,31 @@ while flag==1
 
        %toma de decision
     for f1=1:nc
-   dstclss(:,f1)=norm(vector-mdclss(:,f1));%calculo de la distancia
+        dstclss(:,f1)=norm(vector-mdclss(:,f1));%calculo de la distancia
     end
     minimo=min(min(dstclss));
     valor=find(dstclss==minimo);
-    fprintf('El vector  pertenece a la clase %d\n',valor)
+    fprintf('El vector  pertenece a la clase \"%d\"\n',valor);
 
     %graficado
+    cla reset; %"limpiar" la figura
     figure(1)
     grid on
     hold on
-    txtlegend={};
-    for f1=1:nc
-    plot(ncls(1,:,f1),ncls(2,:,f1),'ko','MarkerSize',10,'MarkerFaceColor',newcolors{f1})%impresion de clases
-    plot(vector(1,:),vector(2,:),'kp','MarkerSize',10,'MarkerFaceColor','w')%impresión de punto de vector
-    name=sprintf('Clase %d',f1);
-    txtlegend=[txtlegend,name];
+    txtlegend={}; %arreglo de las leyendas
     xlabel('Coordenada X');
-    ylabel('Coordenada Y')
-    title('Gráfica de Clases y vector')
+    ylabel('Coordenada Y');
+    title('Gráfica de Clases y vector');
+    for f1=1:nc   %Impresion de las clases
+        plot(ncls(1,:,f1),ncls(2,:,f1),'ko','MarkerSize',10,'MarkerFaceColor',newcolors{f1})%impresion de la (f1) clase      
+            name=sprintf('Clase %d',f1);
+            txtlegend=[txtlegend,name]; %Añadido a leyenda
     end
+    plot(vector(1,:),vector(2,:),'kp','MarkerSize',10,'MarkerFaceColor','w')%impresión de punto de vector 
+    txtlegend=[txtlegend,'Vector'];
+    legend(txtlegend);
     
-    flag=input('¿Desea agregar otro vector? 0 = No / 1 = Si \n');
+    flag=input('\n¿Desea agregar otro vector? 0 = No / 1 = Si \n');
     
-
-%plot(vector(1,:),vector(2,:),'kp','MarkerSize',11,'MarkerFaceColor','w')
-%txtlegend=[txtlegend,'Vector'];
-%legend(txtlegend);
-%title('Proy1 test');
-%hold off %poder pintar de 0
-%plot(vector(1,:),vector(2,:),'kp','MarkerSize',11,'MarkerFaceColor','w')
-
-%
-
-%TODO: Preguntar: ingresar otro vector
-
-%TODO: Cerrar loop
-end
+end %cierre loop
+disp('fin del proceso');
