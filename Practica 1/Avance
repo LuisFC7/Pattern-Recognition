@@ -3,7 +3,7 @@ clear all % limpia todo
 close all %cierra todo
 warning off all  % apaga los warnings
 
-newcolors = {'r','g','b','c','m','y','#0072BD','#D95319','#EDB120','#7E2F8E','#77AC30','#4DBEEE','#A2142F'};
+newcolors = {'r','g','b','c','m','y','#0072BD','#D95319','#EDB120','#7E2F8E','#77AC30','#4DBEEE','#A2142F'};%se mandan llamar los colores
 
 nc=input('¿Cuántas clases quieres?   ');%nc-> número de clases
 npc=input('¿Cuántas repeticiones de clase quieres?   ');%npc-> número de repeticiones por clase
@@ -18,7 +18,7 @@ end
     fprintf('\n');
 for f1=1:nc
    fprintf('Introduce el centroide de la clase %d   ',f1);
-   temCent=input('');
+   temCent=input('');%variable que almacena valor del centroide
    ncls(:,:,f1)=ncls(:,:,f1)+temCent;
 end
     fprintf('\n');
@@ -33,8 +33,7 @@ for f1=1:nc
    mdclss(:,f1)=mean(ncls(:,:,f1),2);
 end
 
-    %TODO: Inicio loop
-    
+    %TODO: Inicio loop 
 vx=input('Coordenada del vector en x=  ');
 vy=input('Coordenada del vector en y=  ');
 vector=[vx;vy];
@@ -42,7 +41,7 @@ fprintf('\n');
 
 %toma de decision
 for f1=1:nc
-   dstclss(:,f1)=norm(vector-mdclss(:,f1));
+   dstclss(:,f1)=norm(vector-mdclss(:,f1));%calculo de la distancia
 end
 minimo=min(min(dstclss));
 valor=find(dstclss==minimo);
@@ -63,6 +62,41 @@ for f1=1:nc
    title('Gráfica de Clases y vector')
 end
 
+%0=No 1=Si
+ fprintf('\n');
+flag=input('¿Desea agregar otro vector? 0 = No / 1 = Si \n');
+while flag==1
+    vx=input('Coordenada del vector en x=  ');
+    vy=input('Coordenada del vector en y=  ');
+    vector=[vx;vy];
+    fprintf('\n');
+
+       %toma de decision
+    for f1=1:nc
+   dstclss(:,f1)=norm(vector-mdclss(:,f1));%calculo de la distancia
+    end
+    minimo=min(min(dstclss));
+    valor=find(dstclss==minimo);
+    fprintf('El vector  pertenece a la clase %d\n',valor)
+
+    %graficado
+    figure(1)
+    grid on
+    hold on
+    txtlegend={};
+    for f1=1:nc
+    plot(ncls(1,:,f1),ncls(2,:,f1),'ko','MarkerSize',10,'MarkerFaceColor',newcolors{f1})%impresion de clases
+    plot(vector(1,:),vector(2,:),'kp','MarkerSize',10,'MarkerFaceColor','w')%impresión de punto de vector
+    name=sprintf('Clase %d',f1);
+    txtlegend=[txtlegend,name];
+    xlabel('Coordenada X');
+    ylabel('Coordenada Y')
+    title('Gráfica de Clases y vector')
+    end
+    
+    flag=input('¿Desea agregar otro vector? 0 = No / 1 = Si \n');
+    
+
 %plot(vector(1,:),vector(2,:),'kp','MarkerSize',11,'MarkerFaceColor','w')
 %txtlegend=[txtlegend,'Vector'];
 %legend(txtlegend);
@@ -73,4 +107,6 @@ end
 %
 
 %TODO: Preguntar: ingresar otro vector
+
 %TODO: Cerrar loop
+end
