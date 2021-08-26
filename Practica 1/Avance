@@ -1,4 +1,3 @@
-
 clc % limpia pantalla
 clear all % limpia todo
 close all %cierra todo
@@ -18,13 +17,13 @@ for f1=1:nc
 end
     fprintf('\n');
 for f1=1:nc
-   fprintf('dame el centroide de la clase %d   ',f1);
+   fprintf('Introduce el centroide de la clase %d   ',f1);
    temCent=input('');
    ncls(:,:,f1)=ncls(:,:,f1)+temCent;
 end
     fprintf('\n');
 for f1=1:nc
-   fprintf('dame la disperción de la clase %d   ',f1);
+   fprintf('Introduce la disperción de la clase %d   ',f1);
    temCent=input('');
    ncls(:,:,f1)=ncls(:,:,f1)*temCent;
 end
@@ -36,8 +35,8 @@ end
 
     %TODO: Inicio loop
     
-vx=input('dame coordenada del vector en x=  ');
-vy=input('dame coordenada del vector en y=  ');
+vx=input('Coordenada del vector en x=  ');
+vy=input('Coordenada del vector en y=  ');
 vector=[vx;vy];
 fprintf('\n');
 
@@ -55,19 +54,23 @@ grid on
 hold on
 txtlegend={};
 for f1=1:nc
-   plot(ncls(1,:,f1),ncls(2,:,f1),'ko','MarkerSize',10,'MarkerFaceColor',newcolors{f1})
+   plot(ncls(1,:,f1),ncls(2,:,f1),'ko','MarkerSize',10,'MarkerFaceColor',newcolors{f1})%impresion de clases
+   plot(vector(1,:),vector(2,:),'kp','MarkerSize',10,'MarkerFaceColor','w')%impresión de punto de vector
    name=sprintf('Clase %d',f1);
    txtlegend=[txtlegend,name];
+   xlabel('Coordenada X');
+   ylabel('Coordenada Y')
+   title('Gráfica de Clases y vector')
 end
-plot(vector(1,:),vector(2,:),'kp','MarkerSize',11,'MarkerFaceColor','w')
-txtlegend=[txtlegend,'Vector'];
-legend(txtlegend);
-title('Proy1 test');
-hold off %poder pintar de 0
-plot(vector(1,:),vector(2,:),'kp','MarkerSize',11,'MarkerFaceColor','w')
+
+%plot(vector(1,:),vector(2,:),'kp','MarkerSize',11,'MarkerFaceColor','w')
+%txtlegend=[txtlegend,'Vector'];
+%legend(txtlegend);
+%title('Proy1 test');
+%hold off %poder pintar de 0
+%plot(vector(1,:),vector(2,:),'kp','MarkerSize',11,'MarkerFaceColor','w')
 
 %
 
 %TODO: Preguntar: ingresar otro vector
-
 %TODO: Cerrar loop
