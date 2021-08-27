@@ -8,7 +8,7 @@ newcolors = {'r','g','b','c','m','y','#0072BD','#D95319','#EDB120','#7E2F8E','#7
 nc=input('¿Cuántas clases quieres?   ');%nc-> número de clases
 npc=input('¿Cuántas repeticiones de clase quieres?   ');%npc-> número de repeticiones por clase
 
-%nclss -> n clases
+%ncls -> n clases
 %mdclss -> medias
 %dstclss -> distancias
 
