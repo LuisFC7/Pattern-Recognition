@@ -1,3 +1,4 @@
+  
 clc % limpia pantalla
 clear all % limpia todo
 close all %cierra todo
@@ -17,7 +18,7 @@ while flag==1   % inicio loop
 
     vrnz=varianza(nc,npc,nclx,ncly, mdcl);
     %---Seleccionar clasificador
-        clasi = input('--¿Qué clasificador deseas usar?-- \n 1.- Distancia Mínima \n2.- Máxima probabilidad (Bayes)\n3.- Mahalanobis\n');
+        clasi = input('--¿Qué clasificador deseas usar?-- \n 1.- Distancia Mínima \n2.- Máxima probabilidad (Bayes)\n3.- Mahalanobis\n4.-Todos \n');
 
         switch clasi
             case 1
@@ -26,6 +27,10 @@ while flag==1   % inicio loop
                 disbayes(nc, vector, mdcl, vrnz);
             case 3
                 mahalanobis(nc, vector, mdcl, vrnz);%pasar media, clase, varianza y vector
+            case 4
+                disMin(nc, vector, mdcl);
+                disbayes(nc, vector, mdcl, vrnz);
+                mahalanobis(nc, vector, mdcl, vrnz);
             otherwise
                 disp('aun no disponible')
         end       
@@ -59,7 +64,7 @@ function disbayes(n, v, med,var) %nclases, vector, media(s), varinza(s)
         datum1=subvecymed(n, v, med(:,f1));
         dato1=datum1;
         datum1t=dato1'; %transpuesta
-        inversa=var(:,:,f1)';
+        inversa=inv(var(:,:,f1));
         sideb=exp(-0.5*dato1*inversa*datum1t); 
         sidea=((1/(2*pi))*det(var(:,:,f1))^(-0.5));
         bayes=sidea*sideb; 
@@ -80,27 +85,23 @@ function disbayes(n, v, med,var) %nclases, vector, media(s), varinza(s)
 end
 
 function mahalanobis(n,v,med,var)
-    %n = numero de clases
-    %v= vector
-    %med =media
-    %var = varianza
-    arrm=[];
+    distancias=[];
     for f1=1:n
         %llamar a matriz de varianza
-        inversa=inv(var(:,:,f1));
+        matvar=inv(var(:,:,f1));
         resta=subvecymed(n, v, med(:,f1));%resta de x vector menos media
         restat=resta';%transpuesta
-        %implementar formula = resta*matvar*restat
-        maha=resta*inversa*restat;
-        arrm=[arrm,maha];
-        
+        dist=resta*matvar*restat;
+        distancias=[distancias, dist];
+  
     end
-    probmin=min(min(arrm));
-    probmaxf=find(arrm==probmin);
-    fprintf('\n\nEl vector  pertenece a la clase \"%d\"\n',probmaxf);
+        
+        %normalizando las probabilidades    
+    distotal=distancias;
+    dmin=min(min(distotal));
+    dfinal=find(dmin==distotal);
     
-
-
+    fprintf('\n\nMAHALANOBIS:\nEl vector  pertenece a la clase \"%d\"\n',dfinal);
 end
 
 %funcion varianza
