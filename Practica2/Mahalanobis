@@ -84,7 +84,12 @@ function mahalanobis(n,v,med,var)
     %v= vector
     %med =media
     %var = varianza
-       for f1=1:n
+    for f1=1:n
+        %llamar a matriz de varianza
+        matvar=inv(varianza);%inversa de varianza
+        resta=subvecymed(n, v, med(:,f1));%resta de x vector menos media
+        restat=resta';%transpuesta
+        %implementar formula = resta*matvar*restat
         
     end
 
