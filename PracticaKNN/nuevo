@@ -17,7 +17,7 @@ while flag==1   % inicio loop
     vector=vecd(); %Entrada del vector desconocido
 
     vrnz=varianza(nc,npc,nclx,ncly, mdcl);
-    suma2=suma(nc,npc,nclx,ncly);
+    suma2=suma(nc,npc,nclx,ncly,vector);
     %aqui va la función
     %suma(nc,npc,nclx,ncly)
     %---Seleccionar clasificador
@@ -153,7 +153,7 @@ function [x,y] = crearCl(n,r) %nclases, repeticiones
     
 end
 
-%funcion para introducir centroides y dispersión
+%función para introducir centroides y dispersión
 function [ax,ay]= alterar(n, x, y) %nclases, cord.x de clase , cord.y de clase
     ax=x;
     ay=y;
@@ -203,8 +203,15 @@ end
 %2. Obtener la  distancia 
 %ordenar 
 %(filas,:"elementos")
-function s = suma(n, nrp, coodx, coody)
-    %aqui va la suma
-    %suma(nc,npc,nclx,ncly)
-    su=sum(coodx)
+function suma3=suma(n, nrp, coodx, coody,vect)
+    arreglo=[];
+    for f1=1:nrp
+       restax=vect(1)-coodx;
+       restay=vect(2)-coody;
+       distancia = sqrt((restax.^2)+(restay.^2));
+       arreglo=[arreglo,distancia];
+    end
+    disp(arreglo);
+    ordenado=sort(arreglo);
+    disp(ordenado)
 end
