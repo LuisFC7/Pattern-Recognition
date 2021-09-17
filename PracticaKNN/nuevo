@@ -1,4 +1,3 @@
-  
 clc % limpia pantalla
 clear all % limpia todo
 close all %cierra todo
@@ -9,17 +8,15 @@ newcolors = {'r','g','b','c','m','y','#0072BD','#D95319','#EDB120','#7E2F8E','#7
 nc=input('¿Cuántas clases quieres?   ');%nc-> número de clases
 npc=input('¿Cuántas representantes de clase quieres?   ');%npc-> número de representantes por clase
 
-[nclx, ncly]=crearCl(nc,npc)   %Crear clases[nclx -> cord. x de n clases , ncly -> cord. y de n clases]
+[nclx, ncly]=crearCl(nc,npc);   %Crear clases[nclx -> cord. x de n clases , ncly -> cord. y de n clases]
 mdcl = medias(nc,nclx,ncly);%calculo de medias
 
 flag=1;
 while flag==1   % inicio loop
     vector=vecd(); %Entrada del vector desconocido
-
     vrnz=varianza(nc,npc,nclx,ncly, mdcl);
-    suma2=suma(nc,npc,nclx,ncly,vector);
-    %aqui va la función
-    %suma(nc,npc,nclx,ncly)
+    suma2=sumak(nc,npc,nclx,ncly,vector);
+
     %---Seleccionar clasificador
         clasi = input('--¿Qué clasificador deseas usar?-- \n 1.- Distancia Mínima \n2.- Máxima probabilidad (Bayes)\n3.- Mahalanobis\n4.-Todos \n');
 
@@ -31,7 +28,7 @@ while flag==1   % inicio loop
             case 3
                 mahalanobis(nc, vector, mdcl, vrnz);%pasar media, clase, varianza y vector
             case 4
-                KNN(nc,vector,suma2); 
+                KNN(nc,vector,suma2,nclx); 
             case 5
                 disMin(nc, vector, mdcl);
                 disbayes(nc, vector, mdcl, vrnz);
@@ -109,9 +106,26 @@ function mahalanobis(n,v,med,var)
     fprintf('\n\nMAHALANOBIS:\nEl vector  pertenece a la clase \"%d\"\n',dfinal);
 end
 
-function KNN(n,v,su2)
+function KNN(n,v,su2,clases)
     %mandamos llamar al vector y numeros de clases
+    recolector=[];
     prueba=su2
+    k=input('\nIngrese valor de K: ')
+    opcion=mod(k,2);
+    if opcion>0
+        for f1=1:k
+            kmin=(min(prueba));
+            recolector=[recolector, kmin];
+        end
+        nmin=min(recolector);%aqui recolectamos el minimo de los k minimos
+        
+    else 
+        fprintf('El valor de K debe ser impar');
+        KNN(n,v,su2);
+    end
+    %k es la cantidad de distancias menores a tomar
+ 
+    
 end
 
 %funcion varianza
@@ -203,15 +217,15 @@ end
 %2. Obtener la  distancia 
 %ordenar 
 %(filas,:"elementos")
-function suma3=suma(n, nrp, coodx, coody,vect)
+function suma = sumak(n, nrp, coodx, coody,vect)
     arreglo=[];
-    for f1=1:nrp
+    for f1=1:n
        restax=vect(1)-coodx;
        restay=vect(2)-coody;
        distancia = sqrt((restax.^2)+(restay.^2));
-       arreglo=[arreglo,distancia];
+       arreglo=[arreglo, distancia];
     end
-    disp(arreglo);
-    ordenado=sort(arreglo);
-    disp(ordenado)
+    %disp(arreglo);
+    suma=sort(arreglo);
+    %ingresar k vecinos
 end
