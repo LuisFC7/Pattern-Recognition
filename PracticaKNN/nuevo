@@ -231,4 +231,3 @@ function suma = sumak(n, nrp, coodx, coody,vect)
     suma=sort(arreglo);
     %ingresar k vecinos
 end
-
