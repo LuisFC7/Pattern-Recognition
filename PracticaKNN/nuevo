@@ -18,7 +18,7 @@ while flag==1   % inicio loop
     suma2=sumak(nc,npc,nclx,ncly,vector);
 
     %---Seleccionar clasificador
-        clasi = input('--¿Qué clasificador deseas usar?-- \n 1.- Distancia Mínima \n2.- Máxima probabilidad (Bayes)\n3.- Mahalanobis\n4.-Todos \n');
+        clasi = input('--¿Qué clasificador deseas usar?-- \n 1.- Distancia Mínima \n2.- Máxima probabilidad (Bayes)\n3.- Mahalanobis\n4.- KNN\n5.- Todos \n');
 
         switch clasi
             case 1
@@ -28,7 +28,7 @@ while flag==1   % inicio loop
             case 3
                 mahalanobis(nc, vector, mdcl, vrnz);%pasar media, clase, varianza y vector
             case 4
-                KNN(nc,vector,suma2,nclx); 
+                KNN(nc,vector,suma2); 
             case 5
                 disMin(nc, vector, mdcl);
                 disbayes(nc, vector, mdcl, vrnz);
@@ -106,18 +106,20 @@ function mahalanobis(n,v,med,var)
     fprintf('\n\nMAHALANOBIS:\nEl vector  pertenece a la clase \"%d\"\n',dfinal);
 end
 
-function KNN(n,v,su2,clases)
+function KNN(n,v,su2)
     %mandamos llamar al vector y numeros de clases
     recolector=[];
-    prueba=su2
+    prueba=su2;
     k=input('\nIngrese valor de K: ')
     opcion=mod(k,2);
     if opcion>0
         for f1=1:k
-            kmin=(min(prueba));
+            kmin=min(min(prueba));
             recolector=[recolector, kmin];
         end
-        nmin=min(recolector);%aqui recolectamos el minimo de los k minimos
+        nmin=min(min(recolector));%aqui recolectamos el minimo de los k minimos
+        entregar=find(nmin==n);
+        fprintf('\n\n KNN:\nEl vector pertenece a la clase \"%d\"\n',entregar);
         
     else 
         fprintf('El valor de K debe ser impar');
@@ -229,3 +231,4 @@ function suma = sumak(n, nrp, coodx, coody,vect)
     suma=sort(arreglo);
     %ingresar k vecinos
 end
+
