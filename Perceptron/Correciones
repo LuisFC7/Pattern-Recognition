@@ -1,0 +1,98 @@
+%Perceptron
+clc
+clear all
+close all 
+warning off all
+
+newcolors = {'r','g','b','c','m','y','#0072BD','#D95319','#EDB120','#7E2F8E','#77AC30','#4DBEEE','#A2142F'};
+%AND
+%When 00 = 0 for the rest of cases 1
+
+
+%función donde se declaran las clases
+
+c1=[1 0 1 1;0 0 0 1; 1 0 0 0];
+c2=[0 0 1 0;0 1 1 1; 1 1 1 0];
+
+psinap=[];
+
+for k=1:3
+    valor=input('\nIngrese el peso sinaptico: ');
+    psinap(k)=valor;
+end
+
+w=psinap';%correcta posición de peso sinaptico.
+r=input('\nIngrese el valor de r(r>0): ');
+xp=input('\nIngrese valor de entrada agregada (xn): ');
+%ecuación 1: w>=0 wn-r(xn) 
+%ecuación 2: w<=0 wn+r(xn)
+%donde xn son entradas y r valor propuesta
+tabla=[0 0 xp;0 1 xp;1 0 xp;1 1 xp];
+
+xn=[];
+e1=[];
+e2=[];
+prueba=[];
+%aqui se controla las entradas de la tabla
+oflag=1;
+flag=1;
+iteracion=0;%solo usado para imprimir las veces de la iteración;
+se=1;
+while flag==1
+    for i=1:4
+        for j=1:3
+            xn(j)=tabla(i,j);
+        end
+        operacion=xn*w;
+   
+        if i<=3%este if controla las combinaciones de la tabla, para primeras 3 combinaciones verificar con ecuación 1
+         %aqui se evalua las primeras 3 combinaciones de la tabla con
+         %ecuacion1
+            if operacion>=0
+                e1=w-(xp*xn');
+                w=e1;
+                oflag=1;
+                prueba(i)=oflag;
+            else
+                oflag=0;
+                prueba(i)=oflag;
+            end
+     
+        else
+       %ultima combinacion de tabla verificar con combinacion 2
+      %aqui evaluar con ecuación 2 
+           if operacion<=0
+               e1=w+(xp*xn');
+               w=e1;
+               oflag=1;
+               prueba(i)=oflag;
+           else 
+               oflag=0;
+               prueba(i)=oflag;
+           end
+      
+        end
+        
+        disp(w);
+    end
+     if prueba(1)==0 & prueba(2)==0 & prueba(3)==0 & prueba(4)==0
+         disp(prueba);
+        break;
+    else
+        flag==1;
+    end;
+    %for n=1:4 %EN ESTE FOR SE LEE EL ARREGLO DONDE SE MODFICARON LAS W
+       %if prueba(n)==1
+        %   se=se+1;%SI SE MODIFICAN AUMENTA EL VALOR DE LA VARIABLE
+       %else 
+         %   se=se+0;%SI NO SE QUEDA IGUAL
+      % end        
+    iteracion=iteracion+1;
+    fprintf('\nIteración %d',iteracion);
+    end
+  
+
+fprintf('\n');
+%aqui desarrollar ecuación con peso sinaptico final
+ecuacion=w';
+
