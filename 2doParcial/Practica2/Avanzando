@@ -1,0 +1,62 @@
+clc
+clear all
+close all
+warning off all
+%este programa convierte las coords espaciales del plano cartesiano a las 
+%coords de una imagen
+pix
+
+function pix()
+    imagen='https://mobimg.b-cdn.net/v3/fetch/4e/4ed770801508e0e65f3f49b5d88160f3.jpeg';
+    h=imread(imagen);
+    figure(1);
+    [m,n]=size(h);
+    imshow(h)
+    figure(2)
+    dato=imref2d(size(h));
+    imshow(h,dato)
+    %Cielo
+    c1X=randi([0,1400],2,200);
+    c1Y=randi([0,200],2,200);
+    %pasto
+    c2X=randi([0,1400],2,400);
+    c2Y=randi([600,m],2,400);
+    %Montania
+    c3X=randi([0,1400],2,200);
+    c3Y=randi([200,400],2,200);
+    %Bosque
+    c4X=randi([0,1400],2,200);
+    c4Y=randi([350,600],2,200);
+
+    %%Graficando sobre el plano de la imagne coord pixelares
+    
+    Z1=impixel(h,c1X(1,:),c1Y(2,:));
+    Z2=impixel(h,c2X(1,:),c2Y(2,:));
+    Z3=impixel(h,c3X(1,:),c3Y(2,:));
+    z4=impixel(h,c4X(1,:),c4Y(2,:));
+   
+    bandera=1;
+    while bandera==1
+        px=input('dame la coordenada del vector en x = ')
+        py=input('dame la coordenada del vector en y = ')
+        if(px <= 1400 && py <= 1050)
+            punto=[px;py];
+            P1=impixel(h,punto(1,:),punto(2,:));
+            bandera=0;
+        else
+            clc
+            disp('Vuelve a ingresar los valores x<=1400 y<=1050')
+        end
+    end
+    
+    
+    grid on
+    hold on
+    plot(c1X(1,:),c1Y(2,:),'ow','MarkerSize',10)
+    plot(c2X(1,:),c2Y(2,:),'or','MarkerSize',10)
+    plot(c3X(1,:),c3Y(2,:),'ob','MarkerSize',10)
+    plot(c4X(1,:),c4Y(2,:),'og','MarkerSize',10)
+    plot(punto(1,:),punto(2,:),'-oy','MarkerSize',10,'MarkerFaceColor','y')
+
+    disp('fin del proceso...')
+end
