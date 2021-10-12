@@ -97,7 +97,7 @@ switch funsi
                                     case 4
                                         disp('KNN');
                                 end  
-                                deja(nc,npc, nclx,ncly, mdcl, vrnz, fclam,porcls);       
+                                deja(nc,npc, nclx,ncly, mdcl, vrnz, fcla,porcls);       
                             end
                         case 2 
                             deja(nc,npc, nclx,ncly, mdcl, vrnz, 1,porcls);    
@@ -204,7 +204,7 @@ maximo=[];
     por=porcentaje(nc,nr,susconf);
     parcerito=clase(nc,nr,susconf);
     porcls=[porcls,parcerito];
-    disp(parcerito);
+    disp('Porcentaje del clasificador');
     disp(por);
     maxx=max(max(maximo));
     maxf1=find(maximo==maxx);
@@ -220,6 +220,7 @@ maximo=[];
           fprintf('\nMejor Clasificador: KNN\n');
       end
     end
+    disp('Porcentaje por clase');
     disp(porcls);
     graficafinal(nc,porcls,'r');
 end
@@ -271,7 +272,7 @@ for f1=1:nc
     parcerito=clase(nc,nr,susconf);
     porcls=[porcls,parcerito];
     porcls=porcls+50;
-    disp(parcerito);
+    disp('Porcentaje del clasificador');
     disp(por);
     maxx=max(max(maximo));
     maxf1=find(maximo==maxx);
@@ -287,6 +288,7 @@ for f1=1:nc
           fprintf('\nMejor Clasificador: KNN\n');
       end
     end
+    disp('Porcentaje por clase');
     disp(porcls);
     graficafinal(nc,porcls,'b');
 end
@@ -333,12 +335,11 @@ maximo=[];
         por=porcentaje(nc,nr,susconf);
         parcerito=clase(nc,nr,susconf);
         porcls=[porcls,parcerito];
-        disp(parcerito);
+        disp('Porcentaje del clasificador');
         disp(por);
         maxx=max(max(maximo));
     maxf1=find(maximo==maxx);
     if clasi==4
-        disp(maxf1);
       if maxf1==1
           fprintf('\nMejor Clasificador: Distancia Minima\n');
       elseif maxf1==2
@@ -349,6 +350,7 @@ maximo=[];
           fprintf('\nMejor Clasificador: KNN\n');
       end
     end
+    disp('Porcentaje por clase');
     disp(porcls);
     graficafinal(nc,porcls,'g');
 end
@@ -375,14 +377,14 @@ function graficafinal(nc,porcentajes,color)
     ylabel('Precisión');
     title('Gráfica de Clases y Precisión');
     %y=porcentajes(x);
-    x=1:nc
+    x=1:nc;
     s1='-';
     s2=color;
     s3='s';
     s=strcat(s1,s2,s3);
     plot(x,porcentajes,s,'LineWidth',2,'MarkerSize',10,'MarkerEdgeColor',color,'MarkerFaceColor',color)
     %plot(v(1,:),v(2,:),'kp','MarkerSize',10,'MarkerFaceColor','w')%impresión de punto de vector 
-    legend('Resustitución','Cross-Validation','Hold in One')
+    %legend('Resustitución','Cross-Validation','Hold in One')
 end
 
 function limpiar()
