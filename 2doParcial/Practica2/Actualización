@@ -1,0 +1,123 @@
+clc
+clear all
+close all
+warning off all
+%este programa convierte las coords espaciales del plano cartesiano a las 
+%coords de una imagen
+pix();
+
+function pix()
+    imagen='https://mobimg.b-cdn.net/v3/fetch/4e/4ed770801508e0e65f3f49b5d88160f3.jpeg';
+    h=imread(imagen);
+    figure(1);
+    [m,n]=size(h);
+    imshow(h)
+    figure(2)
+    dato=imref2d(size(h));
+    imshow(h,dato);
+    %Cielo
+    c1X=randi([0,1400],2,200);
+    c1Y=randi([0,200],2,200);
+    %pasto
+    c2X=randi([0,1400],2,400);
+    c2Y=randi([600,m],2,400);
+    %Montania
+    c3X=randi([0,1400],2,200);
+    c3Y=randi([200,400],2,200);
+    %Bosque
+    c4X=randi([0,1400],2,200);
+    c4Y=randi([350,600],2,200);
+    
+    
+    %%Graficando sobre el plano de la imagne coord pixelares
+    Z1=impixel(h,c1X(1,:),c1Y(2,:));
+    Z2=impixel(h,c2X(1,:),c2Y(2,:));
+    Z3=impixel(h,c3X(1,:),c3Y(2,:));
+    Z4=impixel(h,c4X(1,:),c4Y(2,:));
+    
+    mediaZ1=media(Z1);
+    mediaZ2=media(Z2);
+    mediaZ3=media(Z3);
+    mediaZ4=media(Z4);
+    datosmedia=[mediaZ1; mediaZ2; mediaZ3; mediaZ4];
+    
+     
+   
+    bandera=1;
+    while bandera==1
+        px=input('dame la coordenada del vector en x = ')
+        py=input('dame la coordenada del vector en y = ')
+        if(px <= 1400 && py <= 1050)
+            punto=[px;py];
+            P1=impixel(h,punto(1,:),punto(2,:));
+            bandera=0;
+        else
+            clc
+            disp('Coordenadas Incorrectas \n Vuelve a ingresar los valores x<=1400 y<=1050')
+        end
+    end
+    disMin(punto,datosmedia);
+   
+    grid on
+    hold on
+    plot(c1X(1,:),c1Y(2,:),'ow','MarkerSize',10)
+    plot(c2X(1,:),c2Y(2,:),'or','MarkerSize',10)
+    plot(c3X(1,:),c3Y(2,:),'ob','MarkerSize',10)
+    plot(c4X(1,:),c4Y(2,:),'og','MarkerSize',10)
+    plot(punto(1,:),punto(2,:),'-oy','MarkerSize',10,'MarkerFaceColor','y')
+
+    disp('fin del proceso...')
+end
+ 
+
+%Aqui llamar a clasificadores
+%DISTANCIA MINIMA
+function disMin(v, med) %nclases, vector, media(s)
+%dstclss -> distancias
+   for f1=1:4
+        dstclss(f1,:)=norm(v-med(f1,:));%calculo de la distancia
+   end
+    minimo=min(min(dstclss));
+    valor=find(dstclss==minimo);
+    fprintf('\n\nDISTANCIA MÍNIMA:\nEl vector  pertenece a la clase \"%d\"\n',valor);
+end
+
+function disbayes(n, v, med,var) %nclases, vector, media(s), varinza(s)
+    %llamada a h = resta de vector menos media
+    pbayes=[];
+    for f1=1:n
+        datum1=subvecymed(n, v, med(:,f1));
+        dato1=datum1;
+        datum1t=dato1'; %transpuesta
+        inversa=inv(var(:,:,f1));
+        sideb=exp(-0.5*dato1*inversa*datum1t); 
+        sidea=((1/(2*pi))*det(var(:,:,f1))^(-0.5));
+        bayes=sidea*sideb; 
+        pbayes=[pbayes, bayes];
+    end
+        
+        %normalizando las probabilidades    
+    sumprob=sum(pbayes);
+    probfinal=(pbayes/sumprob)*99;
+    probmax=max(max(probfinal));
+    probmax1=find(probfinal==probmax);
+    if probmax1>0
+        fprintf('\n\nMAXIMA PROBABILIDAD:\nEl vector  pertenece a la clase \"%d\"\n',probmax1); 
+    else
+        fprintf('\n\nMAXIMA PROBABILIDAD:\nEl vector is far, far away \"%d\"\n');
+    end
+        
+end
+
+function var=varianza(n,r,cx,cy, m) %nclases, repeticiones Clases, x de clase, y de clase, media(s)
+    for f1=1:n
+        aux=[ cx(:,:,f1)-m(1,f1); cy(:,:,f1)-m(2,f1)];
+        aux1=aux';
+        var(:,:,f1)=(1/r)*(aux*aux1);
+    end
+end
+
+%devolvemos la media
+function med = media(dato) 
+    med=mean(dato,'omitnan');
+end
