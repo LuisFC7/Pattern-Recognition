@@ -34,15 +34,30 @@ function pix()
     Z2=impixel(h,c2X(1,:),c2Y(2,:));
     Z3=impixel(h,c3X(1,:),c3Y(2,:));
     Z4=impixel(h,c4X(1,:),c4Y(2,:));
+    %transpuestas para varianza
+    z_1=Z1';
+    z_2=Z2';
+    z_3=Z3';
+    z_4=Z4';
     
+    %LLAMADA A MEDIAS
     mediaZ1=media(Z1);
     mediaZ2=media(Z2);
     mediaZ3=media(Z3);
     mediaZ4=media(Z4);
-    datosmedia=[mediaZ1; mediaZ2; mediaZ3; mediaZ4];
+    datosmedia=[mediaZ1; mediaZ2; mediaZ3; mediaZ4]
     
-     
-   
+    %VARIANZAS
+    r1=200;
+    r2=400;
+    r3=200;
+    r4=200;
+    var1=varianza(r1,z_1, mediaZ1);
+    var2=varianza(r2,z_2, mediaZ2);
+    var3=varianza(r3,z_3, mediaZ3);
+    var4=varianza(r4,z_4, mediaZ4);
+    datosvarianza=[var1; var2; var3; var4];
+    
     bandera=1;
     while bandera==1
         px=input('dame la coordenada del vector en x = ')
@@ -56,8 +71,18 @@ function pix()
             disp('Coordenadas Incorrectas \n Vuelve a ingresar los valores x<=1400 y<=1050')
         end
     end
-    disMin(punto,datosmedia);
-   
+    disMin(P1,datosmedia);
+    disbayes(P1, datosmedia, datosvarianza);
+    mahalanobis(P1,datosmedia,datosvarianza);
+    
+    %LLAMAR A SUMAS
+    sZ1 = sumak(r1,  z_1,P1);
+    sZ2 = sumak(r2,  z_2,P1);
+    sZ3 = sumak(r3,  z_3,P1);
+    sZ4 = sumak(r4,  z_4,P1);
+    datossuma=[sZ1, sZ2, sZ3, sZ4];
+    KNN(P1,datossuma,r1);
+    
     grid on
     hold on
     plot(c1X(1,:),c1Y(2,:),'ow','MarkerSize',10)
@@ -81,39 +106,103 @@ function disMin(v, med) %nclases, vector, media(s)
     valor=find(dstclss==minimo);
     fprintf('\n\nDISTANCIA MÍNIMA:\nEl vector  pertenece a la clase \"%d\"\n',valor);
 end
-
-function disbayes(n, v, med,var) %nclases, vector, media(s), varinza(s)
+%BAYES
+function disbayes(v, med, var) %nclases, vector, media(s), varinza(s)[var1, var2,var3]
     %llamada a h = resta de vector menos media
     pbayes=[];
-    for f1=1:n
-        datum1=subvecymed(n, v, med(:,f1));
+    for f1=1:4
+        datum1=[v(1)-med(f1,:) v(2)-med(f1,:) v(3)-med(f1,:)];
         dato1=datum1;
         datum1t=dato1'; %transpuesta
-        inversa=inv(var(:,:,f1));
+        inversa=inv(var(f1));
         sideb=exp(-0.5*dato1*inversa*datum1t); 
-        sidea=((1/(2*pi))*det(var(:,:,f1))^(-0.5));
+        sidea=((1/(2*pi))*det(var(f1))^(-0.5));
         bayes=sidea*sideb; 
         pbayes=[pbayes, bayes];
-    end
-        
-        %normalizando las probabilidades    
+    end   
+    %normalizando las probabilidades   
     sumprob=sum(pbayes);
     probfinal=(pbayes/sumprob)*99;
     probmax=max(max(probfinal));
     probmax1=find(probfinal==probmax);
-    if probmax1>0
-        fprintf('\n\nMAXIMA PROBABILIDAD:\nEl vector  pertenece a la clase \"%d\"\n',probmax1); 
-    else
-        fprintf('\n\nMAXIMA PROBABILIDAD:\nEl vector is far, far away \"%d\"\n');
-    end
-        
+    fprintf('\n\nMAXIMA PROBABILIDAD:\nEl vector  pertenece a la clase \"%d\"\n',probmax1); 
+ 
+end
+%MAHALANOBIS
+function mahalanobis(v,med,var)
+    distancias=[];
+    for f1=1:4
+        %llamar a matriz de varianza
+        matvar=inv(var(f1));
+        %resta=subvecymed(n, v, med(:,f1));%resta de x vector menos media
+        resta=[v(1)-med(f1,:) v(2)-med(f1,:) v(3)-med(f1,:)];
+        restat=resta';%transpuesta
+        dist=resta*matvar*restat;
+        distancias=[distancias, dist];
+  
+    end    
+    %normalizando las probabilidades    
+    distotal=distancias;
+    dmin=min(min(distotal));
+    dfinal=find(dmin==distotal);
+    fprintf('\n\nMAHALANOBIS:\nEl vector  pertenece a la clase \"%d\"\n',dfinal);
 end
 
-function var=varianza(n,r,cx,cy, m) %nclases, repeticiones Clases, x de clase, y de clase, media(s)
-    for f1=1:n
-        aux=[ cx(:,:,f1)-m(1,f1); cy(:,:,f1)-m(2,f1)];
+%KNN
+function KNN(v,su2,nrp)
+    k=input('\nIngrese valor de K: ');
+    opcion=mod(k,2);
+    if opcion>0
+        [minimos, lminimos]=ordenar(su2,k,nrp);
+        for f1=1:k
+            %%fprintf('   d = %d de la clase %d\n',minimos(f1),lminimos(f1));
+        end
+        fprintf('\n\n KNN:\nEl vector pertenece a la clase \"%d\"\n',mode(lminimos));
+        
+    else 
+        fprintf('El valor de K debe ser impar');
+        KNN(v,su2,nrp);
+    end
+    %k es la cantidad de distancias menores a tomar   
+end
+
+
+function suma = sumak(nrp, datoz,vect)
+    arreglo=[];
+    x=datoz(1,:);%codx
+    y=datoz(2,:);%cody
+    z=datoz(3,:);%codz
+   % for f1=1:4
+        for f2=1:nrp
+           restax=vect(1)-x(:,f2);
+           restay=vect(2)-y(:,f2);
+           restaz=vect(3)-z(:,f2);
+           distancia = sqrt((restax.^2)+(restay.^2)+(restaz.^2));
+           arreglo=[arreglo distancia];
+        end
+   % end
+    suma=(arreglo);
+end
+
+%ORDENAR
+function [elementos, indis]=ordenar(arre, kn,rep)
+    fprintf('k vecinos %d',kn);
+    [aOrd indOrd]=sort(arre);
+    elementos = aOrd(1:kn);
+    indisreal = indOrd(1:kn);
+    indis = fix(indisreal/rep)+1;
+end
+
+%VARIANZA
+function var=varianza(repre,datoz, m) %datoz = Z repre numero de representantes, m media
+    f1=datoz(1,:);
+    f2=datoz(2,:);
+    f3=datoz(3,:);
+    med=m';
+    for I=1:repre
+        aux=[f1(:,I)-med(1); f2(:,I)-med(2); f3(:,I)-med(3);];
         aux1=aux';
-        var(:,:,f1)=(1/r)*(aux*aux1);
+        var=(1/repre)*(aux*aux1);
     end
 end
 
