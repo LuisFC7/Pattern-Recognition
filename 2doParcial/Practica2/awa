@@ -1,0 +1,212 @@
+clc
+clear all
+close all
+warning off all
+%este programa convierte las coords espaciales del plano cartesiano a las 
+%coords de una imagen
+pix();
+
+function pix()
+    imagen='https://mobimg.b-cdn.net/v3/fetch/4e/4ed770801508e0e65f3f49b5d88160f3.jpeg';
+    h=imread(imagen);
+    figure(1);
+    [m,n]=size(h);
+    imshow(h)
+    figure(2)
+    dato=imref2d(size(h));
+    imshow(h,dato);
+    %Cielo
+    c1X=randi([0,1400],2,200);
+    c1Y=randi([0,200],2,200);
+    %pasto
+    c2X=randi([0,1400],2,200);
+    c2Y=randi([600,m],2,200);
+    %Montania
+    c3X=randi([0,1400],2,200);
+    c3Y=randi([200,400],2,200);
+    %Bosque
+    c4X=randi([0,1400],2,200);
+    c4Y=randi([350,600],2,200);
+    
+    
+    %%Graficando sobre el plano de la imagne coord pixelares
+    Z1=impixel(h,c1X(1,:),c1Y(2,:));
+    Z2=impixel(h,c2X(1,:),c2Y(2,:));
+    Z3=impixel(h,c3X(1,:),c3Y(2,:));
+    Z4=impixel(h,c4X(1,:),c4Y(2,:));
+    %transpuestas para varianza
+    z_1=Z1';
+    z_2=Z2';
+    z_3=Z3';
+    z_4=Z4';
+    
+    %LLAMADA A MEDIAS
+    mediaZ1=media(Z1);
+    mediaZ2=media(Z2);
+    mediaZ3=media(Z3);
+    mediaZ4=media(Z4);
+    datosmedia=[mediaZ1; mediaZ2; mediaZ3; mediaZ4]
+    
+    %VARIANZAS
+    r1=200;
+    r2=200;
+    r3=200;
+    r4=200;
+    var1=varianza(r1,z_1, mediaZ1);
+    var2=varianza(r2,z_2, mediaZ2);
+    var3=varianza(r3,z_3, mediaZ3);
+    var4=varianza(r4,z_4, mediaZ4);
+    datosvarianza=[var1; var2; var3; var4];
+    
+    bandera=1;
+    while bandera==1
+        px=input('Dame la coordenada del vector en x = ')
+        py=input('Dame la coordenada del vector en y = ')
+        if(px <= 1400 && py <= 1050 && px>0 && py>0)
+            punto=[px;py];
+            P1=impixel(h,punto(1,:),punto(2,:));
+            bandera=0;
+        else
+            clc
+            fprintf('Coordenadas Incorrectas\nVuelve a ingresar los valores 0<x<=1400 0<y<=1050 \n');
+        end
+    end
+    disMin(P1,datosmedia);
+    disbayes(P1, datosmedia, datosvarianza);
+    mahalanobis(P1,datosmedia,datosvarianza);
+    
+    %LLAMAR A SUMAS
+    sZ1 = sumak(r1,  z_1,P1);
+    sZ2 = sumak(r2,  z_2,P1);
+    sZ3 = sumak(r3,  z_3,P1);
+    sZ4 = sumak(r4,  z_4,P1);
+    datossuma=[sZ1, sZ2, sZ3, sZ4];
+    KNN(P1,datossuma,r1);
+    txtlegend={'Cielo','Pasto','Montaña','Bosque','Vector'};
+    grid on
+    hold on
+    plot(c1X(1,:),c1Y(2,:),'ow','MarkerSize',8,'MarkerFaceColor','w','MarkerEdgeColor','k')
+    plot(c2X(1,:),c2Y(2,:),'or','MarkerSize',8,'MarkerFaceColor','r','MarkerEdgeColor','k')
+    plot(c3X(1,:),c3Y(2,:),'ob','MarkerSize',8,'MarkerFaceColor','b','MarkerEdgeColor','k')
+    plot(c4X(1,:),c4Y(2,:),'og','MarkerSize',8,'MarkerFaceColor','g','MarkerEdgeColor','k')
+    plot(punto(1,:),punto(2,:),'-oy','MarkerSize',8,'MarkerFaceColor','y','MarkerEdgeColor','k')
+    legend(txtlegend);
+    disp('fin del proceso...')
+end
+ 
+
+%Aqui llamar a clasificadores
+%DISTANCIA MINIMA
+function disMin(v, med) %nclases, vector, media(s)
+%dstclss -> distancias
+   for f1=1:4
+        dstclss(f1,:)=norm(v-med(f1,:));%calculo de la distancia
+   end
+    minimo=min(min(dstclss));
+    valor=find(dstclss==minimo);
+    fprintf('\n\nDISTANCIA MÍNIMA:\nEl vector  pertenece a la clase \"%d\"\n',valor);
+end
+%BAYES
+function disbayes(v, med, var) %nclases, vector, media(s), varinza(s)[var1, var2,var3]
+    %llamada a h = resta de vector menos media
+    pbayes=[];
+    for f1=1:4
+        datum1=[v(1)-med(f1,:) v(2)-med(f1,:) v(3)-med(f1,:)];
+        dato1=datum1;
+        datum1t=dato1'; %transpuesta
+        inversa=inv(var(f1));
+        sideb=exp(-0.5*dato1*inversa*datum1t); 
+        sidea=((1/(2*pi))*det(var(f1))^(-0.5));
+        bayes=sidea*sideb; 
+        pbayes=[pbayes, bayes];
+    end   
+    %normalizando las probabilidades   
+    sumprob=sum(pbayes);
+    probfinal=(pbayes/sumprob)*99;
+    probmax=max(max(probfinal));
+    probmax1=find(probfinal==probmax);
+    fprintf('\n\nMAXIMA PROBABILIDAD:\nEl vector  pertenece a la clase \"%d\"\n',probmax1); 
+ 
+end
+%MAHALANOBIS
+function mahalanobis(v,med,var)
+    distancias=[];
+    for f1=1:4
+        %llamar a matriz de varianza
+        matvar=inv(var(f1));
+        %resta=subvecymed(n, v, med(:,f1));%resta de x vector menos media
+        resta=[v(1)-med(f1,:) v(2)-med(f1,:) v(3)-med(f1,:)];
+        restat=resta';%transpuesta
+        dist=resta*matvar*restat;
+        distancias=[distancias, dist];
+  
+    end    
+    %normalizando las probabilidades    
+    distotal=distancias;
+    dmin=min(min(distotal));
+    dfinal=find(dmin==distotal);
+    fprintf('\n\nMAHALANOBIS:\nEl vector  pertenece a la clase \"%d\"\n',dfinal);
+end
+
+%KNN
+function KNN(v,su2,nrp)
+    k=input('\nIngrese valor de K: ');
+    opcion=mod(k,2);
+    if opcion>0
+        [minimos, lminimos]=ordenar(su2,k,nrp);
+        for f1=1:k
+            %%fprintf('   d = %d de la clase %d\n',minimos(f1),lminimos(f1));
+        end
+        fprintf('\n\n KNN:\nEl vector pertenece a la clase \"%d\"\n',mode(lminimos));
+        
+    else 
+        fprintf('El valor de K debe ser impar');
+        KNN(v,su2,nrp);
+    end
+    %k es la cantidad de distancias menores a tomar   
+end
+
+
+function suma = sumak(nrp, datoz,vect)
+    arreglo=[];
+    x=datoz(1,:);%codx
+    y=datoz(2,:);%cody
+    z=datoz(3,:);%codz
+   % for f1=1:4
+        for f2=1:nrp
+           restax=vect(1)-x(:,f2);
+           restay=vect(2)-y(:,f2);
+           restaz=vect(3)-z(:,f2);
+           distancia = sqrt((restax.^2)+(restay.^2)+(restaz.^2));
+           arreglo=[arreglo distancia];
+        end
+   % end
+    suma=(arreglo);
+end
+
+%ORDENAR
+function [elementos, indis]=ordenar(arre, kn,rep)
+    fprintf('k vecinos %d',kn);
+    [aOrd indOrd]=sort(arre);
+    elementos = aOrd(1:kn);
+    indisreal = indOrd(1:kn);
+    indis = fix(indisreal/rep)+1;
+end
+
+%VARIANZA
+function var=varianza(repre,datoz, m) %datoz = Z repre numero de representantes, m media
+    f1=datoz(1,:);
+    f2=datoz(2,:);
+    f3=datoz(3,:);
+    med=m';
+    for I=1:repre
+        aux=[f1(:,I)-med(1); f2(:,I)-med(2); f3(:,I)-med(3);];
+        aux1=aux';
+        var=(1/repre)*(aux*aux1);
+    end
+end
+
+%devolvemos la media
+function med = media(dato) 
+    med=mean(dato,'omitnan');
+end
