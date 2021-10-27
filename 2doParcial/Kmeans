@@ -1,0 +1,50 @@
+%K-Means
+%generar elementos aleatorios (x,y)
+%graficar
+%pedir un valor de k y añadir el valor de k a los primeros k elementos
+%OPCION PARA PEDIR EL NUMERO DE MUESTRAS A PROBAR
+clc
+clear all
+close all
+warning off all
+newcolors = {'r','g','b','c','m','y','#0072BD','#D95319','#EDB120','#7E2F8E','#77AC30','#4DBEEE','#A2142F'};%se mandan llamar los colores
+valork=input('\nIntroduce el valor de K: \n');
+muestras=input('\nIntroduce el numero de muestras: \n');
+
+[nclx, ncly]=crearCl(1,muestras);
+graficando(1,nclx,ncly,newcolors);
+getK(nclx,ncly,valork);
+
+function getK(nclx,ncly,valork)
+    z=[];%aqui guardar los k centroides
+    for i=1:valork
+        z=[nclx(1,:,i),ncly(1,:,i)];
+    end
+    disp(z);
+end
+
+
+function [x,y] = crearCl(n,r) %nclases, repeticiones
+
+    for f1=1:1
+       x(:,:,f1)=randi([1,20],1,r);
+       y(:,:,f1)=randi([1,20],1,r);
+    end
+end
+
+function graficando(n,cx,cy,color) %nclases, vector, cord.x de clase , cord.y de clase, colores
+    cla reset; %"limpiar" la figura
+    figure(1)
+    grid on
+    hold on
+    txtlegend={}; %arreglo de las leyendas
+    xlabel('Coordenada X');
+    ylabel('Coordenada Y');
+    title('Gráfica de Muestras');
+    for f1=1:1   %Impresion de las clases
+        plot(cx(1,:,f1),cy(1,:,f1),'ko','MarkerSize',10,'MarkerFaceColor',color{f1})%impresion de la (f1) clase      
+            name=sprintf('Clase %d',f1);
+            txtlegend=[txtlegend,name]; %Añadido a leyenda
+    end
+    
+end
