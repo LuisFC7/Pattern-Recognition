@@ -1,0 +1,36 @@
+clc
+clear all
+close all
+warning off all
+%este programa convierte las coords espaciales del plano cartesiano a las 
+%coords de una imagen
+pix();
+
+function pix()
+    imagen='https://mobimg.b-cdn.net/v3/fetch/4e/4ed770801508e0e65f3f49b5d88160f3.jpeg';
+    h=imread(imagen);
+    figure(1);
+    [m,n]=size(h);
+    imshow(h)
+    figure(2)
+    dato=imref2d(size(h));
+    imshow(h,dato)
+   
+    %Puntos aleatorios
+    c1X=randi([0,1400],2,200);
+    c1Y=randi([0,1050],2,200);
+    centroides=[clx;cly];
+    %LLAMADA A FUNCION K Means
+    valork=input('\Ingrese el valor de K: ');
+    Z1=impixel(h,c1X(1,:),c1Y(2,:));
+    
+    grid on
+    hold on
+    plot(c1X(1,:),c1Y(2,:),'ow','MarkerSize',10)
+   
+    disp('fin del proceso...')
+end
+
+function k-means
+    %tomar los primeros k centros para agruparlos en un grupo c/u
+end
