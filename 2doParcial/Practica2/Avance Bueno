@@ -19,9 +19,10 @@ function pix()
     %Puntos aleatorios
     c1X=randi([0,1400],2,200);
     c1Y=randi([0,1050],2,200);
-    centroides=[clx;cly];
+    %GUARDAR CENTROIDES
     %LLAMADA A FUNCION K Means
     valork=input('\Ingrese el valor de K: ');
+    kmeans(valork,c1X,c1Y)
     Z1=impixel(h,c1X(1,:),c1Y(2,:));
     
     grid on
@@ -31,6 +32,24 @@ function pix()
     disp('fin del proceso...')
 end
 
-function k-means
+function kmeans(k,x,y)
     %tomar los primeros k centros para agruparlos en un grupo c/u
+    aux=[];
+    distanciaz=[];
+    comp=[];
+    for i=1:k
+        aux=[x(1:k);y(1:k)];
+        v=sqrt((x(1:k).^2)+(y(1:k).^2));
+    end
+    distanciaz=[distanciaz, v];
+
+    %algoritmo al 100 de kmeans
+    t=k+1;
+    for j=t:200
+        %minimo=min(min(dstclss));
+        %valor=find(dstclss==minimo);
+        nd=sqrt((x(1:t).^2)+(y(1:t).^2));%calculo de distancia de elemento nuevo
+        
+    end
+    
 end
