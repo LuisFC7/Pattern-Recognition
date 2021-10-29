@@ -2,8 +2,10 @@ clc
 clear all
 close all
 warning off all
-color = {'or','og','ob','oy','om','oc'};
-color2= {'r','g','b','y','m','c'};
+
+color = {'or','og','ob','oc','om','oy'};
+bandera=1;
+while bandera==1;
 
     imagen='https://mobimg.b-cdn.net/v3/fetch/4e/4ed770801508e0e65f3f49b5d88160f3.jpeg';
     pt=1000;
@@ -22,39 +24,63 @@ color2= {'r','g','b','y','m','c'};
     valork=input('\nIngrese el valor de K: ');
     Z1=impixel(h,c1X(1,:),c1Y(2,:));
     
+    clasm=[];
+    clasn=[];
+    for f0=1:valork
+       clasm(:,:,f0)=Z1(f0,:);       
+       clasn=[clasn; c1X(1,f0),c1Y(2,f0), f0];       
+    end
+    flag=1;
+    medR=NaN;
+    it=0;
+    while flag==1
+        for fx=0: 15
+        for f1=valork+1:pt
+            dist=[];
+           for f2=1:valork
+                medK(:,:,f2)=[mean(clasm(:,1,f2),'omitnan'),mean(clasm(:,2,f2),'omitnan'),mean(clasm(:,3,f2),'omitnan')];
+                au=sqrt( (medK(:,1,f2)-Z1(f1,1) )^2 +(medK(:,2,f2)-Z1(f1,2) )^2 +(medK(:,3,f2)-Z1(f1,3) )^2    );
+                dist=[dist au];
+           end
+            dmin=min(min(dist));
+            dfinal=find(dmin==dist);
+
+           for f3=1:valork
+              if(dfinal==f3) 
+                clasm((f1-valork+1),:,dfinal)=Z1(f1,:);
+                clasn=[clasn; c1X(1,f1),c1Y(2,f1), dfinal];
+              else
+                clasm((f1-valork+1),:,f3)=NaN;
+              end
+           end
+        end
+        end
+        it=it+1;
+        if medR==medK
+            flag=0;
+        else
+            medR=medK;
+        end
+    end
+    disp('Iteraciones:');
+    disp(it)
     
     grid on
-    hold on  
+    hold on
     txtlegend={};
     title('K-Means');
-    for f0=1:valork
-       clasm(:,:,f0)=Z1(f0,:);%clases en terminos rgb
-       plot(c1X(1,f0),c1Y(2,f0),color{f0},'MarkerSize',10);
-       name=sprintf('Clase %d',f0);
+    for f1=1:pt
+        plot(clasn(f1,1),clasn(f1,2),color{clasn(f1,3)},'MarkerSize',10);
+        if f1<=valork
+            name=sprintf('Clase %d',f1);
             txtlegend=[txtlegend,name];
-    end
-    
-    for f1=valork+1:pt
-        dist=[];
-       for f2=1:valork
-            medK(:,:,f2)=[mean(clasm(:,1,f2),'omitnan'),mean(clasm(:,2,f2),'omitnan'),mean(clasm(:,3,f2),'omitnan')];
-            au=sqrt( (medK(:,1,f2)-Z1(f1,1) )^2 +(medK(:,2,f2)-Z1(f1,2) )^2 +(medK(:,3,f2)-Z1(f1,3) )^2    );
-            dist=[dist au];
-       end
-        dmin=min(min(dist));
-        dfinal=find(dmin==dist);
-        
-       for f3=1:valork
-          if(dfinal==f3) 
-            clasm((f1-valork+1),:,dfinal)=Z1(f1,:);
-            
-            plot(c1X(1,f1),c1Y(2,f1),color{dfinal},'MarkerSize',10);
-          else
-            clasm((f1-valork+1),:,f3)=NaN;
-          end
-       end
+        end
     end
     legend(txtlegend);
-    
+   
+    bandera=input('\n¿Desea volver a intentarlo? 0 = No / 1 = Si \n');
+    cla(2);
+    imshow(h,dato);
+end
+   
     disp('fin del proceso...');
-
