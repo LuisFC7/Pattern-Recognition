@@ -1,0 +1,59 @@
+clc
+clear all
+close all
+warning off all
+
+color = {'or','og','ob','oc','om','oy'};
+
+    imagen='https://mobimg.b-cdn.net/v3/fetch/4e/4ed770801508e0e65f3f49b5d88160f3.jpeg';
+    pt=2000;
+    h=imread(imagen);
+    figure(1);
+    [m,n]=size(h);
+    imshow(h)
+    figure(2)
+    dato=imref2d(size(h));
+    imshow(h,dato)
+   
+    %Puntos aleatorios
+    c1X=randi([0,1400],2,pt);
+    c1Y=randi([0,1050],2,pt);
+
+    valork=input('\nIngrese el valor de K: ');
+    Z1=impixel(h,c1X(1,:),c1Y(2,:));
+    
+    
+    clasn=[];
+    for f0=1:valork
+       clasm(:,:,f0)=Z1(f0,:);       
+       clasn=[clasn; c1X(1,f0),c1Y(2,f0), f0];       
+    end
+    for fx=0: valork*4
+    for f1=valork+1:pt
+        dist=[];
+       for f2=1:valork
+            medK(:,:,f2)=[mean(clasm(:,1,f2),'omitnan'),mean(clasm(:,2,f2),'omitnan'),mean(clasm(:,3,f2),'omitnan')];
+            au=sqrt( (medK(:,1,f2)-Z1(f1,1) )^2 +(medK(:,2,f2)-Z1(f1,2) )^2 +(medK(:,3,f2)-Z1(f1,3) )^2    );
+            dist=[dist au];
+       end
+        dmin=min(min(dist));
+        dfinal=find(dmin==dist);
+        
+       for f3=1:valork
+          if(dfinal==f3) 
+            clasm((f1-valork+1),:,dfinal)=Z1(f1,:);
+            clasn=[clasn; c1X(1,f1),c1Y(2,f1), dfinal];
+          else
+            clasm((f1-valork+1),:,f3)=NaN;
+          end
+       end
+    end
+    end
+    
+    grid on
+    hold on
+    for f1=1:pt
+        plot(clasn(f1,1),clasn(f1,2),color{clasn(f1,3)},'MarkerSize',10);
+    end
+   
+    disp('fin del proceso...');
