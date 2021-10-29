@@ -1,0 +1,78 @@
+clc
+clear all
+close all
+warning off all
+newcolors = {'r','g','b','c','m','y','#0072BD','#D95319','#EDB120','#7E2F8E','#77AC30','#4DBEEE','#A2142F'};%se mandan llamar los colores
+%este programa convierte las coords espaciales del plano cartesiano a las 
+%coords de una imagen
+pix();
+
+function pix()
+    imagen='https://mobimg.b-cdn.net/v3/fetch/4e/4ed770801508e0e65f3f49b5d88160f3.jpeg';
+    h=imread(imagen);
+    figure(1);
+    [m,n]=size(h);
+    imshow(h)
+    figure(2)
+    dato=imref2d(size(h));
+    imshow(h,dato)
+   
+    %Puntos aleatorios
+    c1X=randi([0,1400],2,200);
+    c1Y=randi([0,1050],2,200);
+    %GUARDAR CENTROIDES
+    %LLAMADA A FUNCION K Means
+    valork=input('\Ingrese el valor de K: ');
+    kmeans(valork,c1X,c1Y)
+    Z1=impixel(h,c1X(1,:),c1Y(2,:));
+    
+    grid on
+    hold on
+    plot(c1X(1,:),c1Y(2,:),'ow','MarkerSize',10)
+   
+    disp('fin del proceso...')
+end
+
+function kmeans(k,x,y)
+    newcolors = {'r','g','b','c','m','y','#0072BD','#D95319','#EDB120','#7E2F8E','#77AC30','#4DBEEE','#A2142F'};%se mandan llamar los colores
+    %tomar los primeros k centros para agruparlos en un grupo c/u
+    aux=[];
+    distanciaz=[];
+    distanciatotal=[];
+    comp=[];
+    for i=1:k
+        aux=[x(1:k);y(1:k)];
+    end
+    disp(aux);
+    temp=k+1;
+    awa=[];
+    atotal=[];
+    btotal=[];
+    aslt=[];
+    for j=temp:200
+        acord=[];
+        bcord=[];
+        comp=[];
+        for i=1:k
+            a=x(j);
+            b=y(j);
+            operacion=sqrt((aux(1,i)-a)*.2+(aux(2,i)-b)*.2);
+            acord=[acord,a];
+            bcord=[bcord,b];
+            comp=[comp;operacion];
+        end
+        M=min(comp);
+        awe=find(comp==M);
+        awa=[awa;awe];
+        aux(1,awe)=(aux(1,awe)+acord(awe))/2;
+        aux(2,awe)=(aux(2,awe)+bcord(awe))/2;
+        %awa contiene las distancias
+               
+    end
+    disp(aux);
+    %v=sqrt((x(1:k).^2)+(y(1:k).^2));
+    %distanciaz=[distanciaz, v];
+    %disp(distanciaz);
+    %algoritmo al 100 de kmeans
+    disp("Mete baja definitiva de una vez");
+end
