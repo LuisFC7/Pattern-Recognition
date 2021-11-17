@@ -5,7 +5,7 @@ warning off all
 %Programa para identificar objetos geometricos de una imagen
 
 figure(1)
-a=imread('C:\Users\Lenovo\Documents\Pattern Recognition\GeometricShapes.jpg');%aqui poner ubicacion de imagen
+a=imread('\GeometricShapes.jpg');%aqui poner ubicacion de imagen
 imshow(a)
 figure(2)
 c=im2bw(a);%conversion a binario
