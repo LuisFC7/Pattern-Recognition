@@ -31,15 +31,19 @@ for k=1:length(objetos)
          rectangle('Position',[caja(1),caja(2),caja(3),caja(4)],'EdgeColor','r','LineWidth',2);
     end
 
+    
     if(objetos(k).Perimeter^2/objetos(k).Area>18)
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'TRIANGULO','Color','r');
-        triangles=triangles+1;
+        triangles=triangles+1;                                                  %Enumera
+        t0=sprintf('TRIANGULO [ %d ]',triangles);                               %identifica
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),t0,'Color','r');     %Imprime   
     elseif(objetos(k).Perimeter^2/objetos(k).Area<14.3)
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'CIRCULO','Color','g');
         circles=circles+1;
+        t0=sprintf('CÍRCULO [ %d ]',circles);
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),t0,'Color','g');        
     else
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'CUADRADO','Color','b');
         squares=squares+1;
+        t0=sprintf('CUADRADO [ %d ]',squares);
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),t0,'Color','b');
     end
 end
 
