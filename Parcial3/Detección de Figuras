@@ -5,7 +5,10 @@ warning off all
 %Programa para identificar objetos geometricos de una imagen
 
 figure(1)
-a=imread('\GeometricShapes.jpg');%aqui poner ubicacion de imagen
+char name;
+[name,pathname]=uigetfile('*.JPG');
+nombre=sprintf('%s%s',pathname,name);
+a=imread(nombre); %buscar la imagen
 imshow(a)
 figure(2)
 c=im2bw(a);%conversion a binario
