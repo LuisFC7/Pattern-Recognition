@@ -27,28 +27,30 @@ for k=1:length(objetos)
     if(objetos(k).Area>1000)
         rectangle('Position',[caja(1),caja(2),caja(3),caja(4)],'EdgeColor','b','LineWidth',2);%esta linea encierra cada objeto en una caja
     else
-         rectangle('Position',[caja(1),caja(2),caja(3),caja(4)],'EdgeColor','r','LineWidth',2);
+         rectangle('Position',[caja(1),caja(2),caja(3),caja(4)],'EdgeColor','b','LineWidth',2);
     end
-
-    if(objetos(k).Perimeter^2/objetos(k).Area>18)%que valor anterior era 18
+    objetos(k)
+    if(objetos(k).Perimeter^2/objetos(k).Area>100)%que valor anterior era 18
         text(objetos(k).Centroid(1),objetos(k).Centroid(2),'LLAVE ALEN','Color','r');
         LLAVE=LLAVE+1;
     elseif(objetos(k).Perimeter^2/objetos(k).Area<=14.3)
         text(objetos(k).Centroid(1),objetos(k).Centroid(2),'RONDANA','Color','g');
         RONDANA=RONDANA+1;
-    elseif(objetos(k).Perimeter^2/objetos(k).Area<14.3)
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'TORNILLO','Color','g');
+    elseif(objetos(k).Perimeter^2/objetos(k).Area>24 & objetos(k).Perimeter^2/objetos(k).Area<50)%arreglar los demas rangos con operadores and
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'TORNILLO','Color','b');
         TORNILLO=TORNILLO+1;
-    elseif(objetos(k).Perimeter^2/objetos(k).Area<14.3)
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'COLA DE PATO','Color','g');
-        DUCK=DUCK+1;
-    else
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'ARGOLLA','Color','g');
+    elseif(objetos(k).Perimeter^2/objetos(k).Area>24)
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'ARGOLLA','Color','m');
         ARGOLLA=ARGOLLA+1;
-        
+    else
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'COLA DE PATO','Color','y');
+        DUCK=DUCK+1;
+
     end
 end
-
+total=RONDANA+LLAVE+TORNILLO+ARGOLLA+DUCK;
+disp('NUMERO DE OBJETOS EN TOTAL: ')
+disp(total)
 disp('RONDANA: ')
 disp(RONDANA)
 disp('LLAVE: ')
