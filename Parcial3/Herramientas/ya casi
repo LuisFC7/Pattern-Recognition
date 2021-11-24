@@ -18,7 +18,7 @@ objetos=regionprops(c,'Perimeter','Area','Centroid','BoundingBox');
 RONDANA=0;
 LLAVE=0;
 TORNILLO=0;
-ARGOLLA=0;
+ARMELLA=0;
 DUCK=0;
 colores={'r','g','b'};
 for k=1:length(objetos)
@@ -33,17 +33,17 @@ for k=1:length(objetos)
     if(objetos(k).Perimeter^2/objetos(k).Area>100)%que valor anterior era 18
         text(objetos(k).Centroid(1),objetos(k).Centroid(2),'LLAVE ALEN','Color','r');
         LLAVE=LLAVE+1;
-    elseif(objetos(k).Perimeter^2/objetos(k).Area<=14.3)
+    elseif(objetos(k).Perimeter^2/objetos(k).Area<=14.3 & objetos(k).Perimeter^2/objetos(k).Area<26)
         text(objetos(k).Centroid(1),objetos(k).Centroid(2),'RONDANA','Color','g');
         RONDANA=RONDANA+1;
-    elseif(objetos(k).Perimeter^2/objetos(k).Area>24)
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'TORNILLO','Color','r');
+    elseif(objetos(k).Perimeter^2/objetos(k).Area>24 & objetos(k).Perimeter^2/objetos(k).Area<50)%arreglar los demas rangos con operadores and
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'TORNILLO','Color','b');
         TORNILLO=TORNILLO+1;
-    elseif(objetos(k).Perimeter^2/objetos(k).Area<10)
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'ARGOLLA','Color','g');
-        ARGOLLA=ARGOLLA+1;
+    elseif(objetos(k).Perimeter^2/objetos(k).Area>24 & objetos(k).Perimeter^2/objetos(k).Area<83) %aun lo estoy modificando
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'ARMELLA','Color','m');
+        ARMELLA=ARMELLA+1;
     else
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'COLA DE PATO','Color','b');
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'COLA DE PATO','Color','y');
         DUCK=DUCK+1;
 
     end
@@ -55,7 +55,7 @@ disp('LLAVE: ')
 disp(LLAVE);
 disp('TORNILLO: ')
 disp(TORNILLO);
-disp('ARGOLLA: ')
-disp(ARGOLLA);
+disp('ARMELLA: ')
+disp(ARMELLA);
 disp('COLA DE PATO: ')
 disp(DUCK);
