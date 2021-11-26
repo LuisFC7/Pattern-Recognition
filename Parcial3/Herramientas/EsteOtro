@@ -1,0 +1,64 @@
+clc
+clear all
+close all
+warning off all
+%Programa para identificar objetos geometricos de una imagen
+[fname,user_canc]=imgetfile('InitialPath','/Users/orozcos/Downloads/Bases');
+figure(1)
+a=imread(fname);%aqui señalar ubicacion de imagen
+imshow(a)
+figure(2)
+c=im2bw(a);%conversion a binario
+imshow(c)
+
+%extraccion de caracteristicas para el reconocimiento de los patrones
+%mediante propiedades geometricas
+objetos=regionprops(c,'Perimeter','Area','Centroid','BoundingBox', 'Solidity');
+
+RONDANA=0;
+LLAVE=0;
+TORNILLO=0;
+ARMELLA=0;
+DUCK=0;
+
+for k=1:length(objetos)
+    caja=objetos(k).BoundingBox;      
+    if(objetos(k).Area>1000)
+        rectangle('Position',[caja(1),caja(2),caja(3),caja(4)],'EdgeColor','b','LineWidth',2);%esta linea encierra cada objeto en una caja
+    else
+         rectangle('Position',[caja(1),caja(2),caja(3),caja(4)],'EdgeColor','b','LineWidth',2);
+    end
+    objetos(k)
+    if(objetos(k).Perimeter^2/objetos(k).Area>100  && objetos(k).Solidity<0.35)%Solidity entre .23 y .29 en las pruebas
+        LLAVE=LLAVE+1;
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),sprintf('[%d] LLAVE ALLEN ',LLAVE),'Color','r');
+    elseif(objetos(k).Perimeter^2/objetos(k).Area<=14.3 && objetos(k).Perimeter^2/objetos(k).Area<26)
+        RONDANA=RONDANA+1;
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),sprintf('[%d] RONDANA',RONDANA),'Color','g');
+    elseif(objetos(k).Perimeter^2/objetos(k).Area>24 && objetos(k).Perimeter^2/objetos(k).Area<50)
+        TORNILLO=TORNILLO+1;
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),sprintf('[%d]TORNILLO',TORNILLO),'Color','b');
+    elseif(objetos(k).Perimeter^2/objetos(k).Area>24 && objetos(k).Perimeter^2/objetos(k).Area<107 ) 
+        ARMELLA=ARMELLA+1;
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),sprintf('[%d]ARMELLA',ARMELLA),'Color','m');
+    else
+        DUCK=DUCK+1;
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),sprintf('[%d]COLA DE PATO',DUCK),'Color','c');
+    end
+end
+%clc %opcional
+disp('RONDANA: ')
+disp(RONDANA)
+disp('LLAVE: ')
+disp(LLAVE);
+disp('TORNILLO: ')
+disp(TORNILLO);
+disp('ARMELLA: ')
+disp(ARMELLA);
+disp('COLA DE PATO: ')
+disp(DUCK);
+disp('TOTAL DE OBJETOS: ')
+tot=RONDANA+LLAVE+TORNILLO+ARMELLA+DUCK;
+disp(tot);
+
+disp('fin');
