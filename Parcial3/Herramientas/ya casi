@@ -11,7 +11,7 @@ figure(2)
 c=im2bw(a);%conversion a binario
 imshow(c)
 
-%extraccion de caractteristicas para el reconocimiento de los patrones
+%extraccion de caracteristicas para el reconocimiento de los patrones
 %mediante propiedades geometricas
 objetos=regionprops(c,'Perimeter','Area','Centroid','BoundingBox');
 
@@ -21,8 +21,9 @@ TORNILLO=0;
 ARMELLA=0;
 DUCK=0;
 colores={'r','g','b'};
+tot=0;
 for k=1:length(objetos)
-    caja=objetos(k).BoundingBox;
+    caja=objetos(k).BoundingBox;   
 
     if(objetos(k).Area>1000)
         rectangle('Position',[caja(1),caja(2),caja(3),caja(4)],'EdgeColor','b','LineWidth',2);%esta linea encierra cada objeto en una caja
@@ -30,22 +31,21 @@ for k=1:length(objetos)
          rectangle('Position',[caja(1),caja(2),caja(3),caja(4)],'EdgeColor','b','LineWidth',2);
     end
     objetos(k)
-    if(objetos(k).Perimeter^2/objetos(k).Area>100)%que valor anterior era 18
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'LLAVE ALEN','Color','r');
+    if(objetos(k).Perimeter^2/objetos(k).Area>106)%que valor anterior era 100
         LLAVE=LLAVE+1;
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),sprintf('[%d] LLAVE ALLEN ',LLAVE),'Color','r');
     elseif(objetos(k).Perimeter^2/objetos(k).Area<=14.3 & objetos(k).Perimeter^2/objetos(k).Area<26)
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'RONDANA','Color','g');
         RONDANA=RONDANA+1;
-    elseif(objetos(k).Perimeter^2/objetos(k).Area>24 & objetos(k).Perimeter^2/objetos(k).Area<50)%arreglar los demas rangos con operadores and
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'TORNILLO','Color','b');
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),sprintf('[%d] RONDANA',RONDANA),'Color','g');
+    elseif(objetos(k).Perimeter^2/objetos(k).Area>24 & objetos(k).Perimeter^2/objetos(k).Area<50)%arreglar los demas rangos con operadores and %en eso andamos
         TORNILLO=TORNILLO+1;
-    elseif(objetos(k).Perimeter^2/objetos(k).Area>24 & objetos(k).Perimeter^2/objetos(k).Area<83) %aun lo estoy modificando
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'ARMELLA','Color','m');
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),sprintf('[%d]TORNILLO',TORNILLO),'Color','b');
+    elseif(objetos(k).Perimeter^2/objetos(k).Area>24 & objetos(k).Perimeter^2/objetos(k).Area<106) %puede variar a 103
         ARMELLA=ARMELLA+1;
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),sprintf('[%d]ARMELLA',ARMELLA),'Color','m');
     else
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'COLA DE PATO','Color','y');
         DUCK=DUCK+1;
-
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),sprintf('[%d]COLA DE PATO',DUCK),'Color','c');
     end
 end
 
@@ -59,3 +59,8 @@ disp('ARMELLA: ')
 disp(ARMELLA);
 disp('COLA DE PATO: ')
 disp(DUCK);
+disp('TOTAL DE OBJETOS: ')
+tot=RONDANA+LLAVE+TORNILLO+ARMELLA+DUCK;
+disp(tot);
+
+disp('fin');
