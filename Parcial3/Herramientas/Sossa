@@ -3,61 +3,67 @@ clear all
 close all
 warning off all
 %Programa para identificar objetos geometricos de una imagen
-[fname,user_canc]=imgetfile('InitialPath','C:\Users\Lenovo\Documents\Semestre 21-2\Pattern Recognition\Imagenes');%Aqui poner la ruta donde se almacenan las imagenes de la base
+bandera=1;
+while bandera == 1
+[fname,user_canc]=imgetfile('InitialPath','direccion de carpeta de las iamgenes');%meter aqui la ruta completa donde tengas las imagenes en tu pc
 figure(1)
-a=imread(fname);%aqui poner ubicacion de imagen
+a=imread(fname);%aqui señalar ubicacion de imagen
 imshow(a)
 figure(2)
 c=im2bw(a);%conversion a binario
 imshow(c)
 
-%extraccion de caractteristicas para el reconocimiento de los patrones
+%extraccion de caracteristicas para el reconocimiento de los patrones
 %mediante propiedades geometricas
-objetos=regionprops(c,'Perimeter','Area','Centroid','BoundingBox');
+objetos=regionprops(c,'Perimeter','Area','Centroid','BoundingBox', 'Solidity');
 
 RONDANA=0;
 LLAVE=0;
 TORNILLO=0;
-ARGOLLA=0;
+ARMELLA=0;
 DUCK=0;
-colores={'r','g','b'};
-for k=1:length(objetos)
-    caja=objetos(k).BoundingBox;
 
+for k=1:length(objetos)
+    caja=objetos(k).BoundingBox;      
     if(objetos(k).Area>1000)
         rectangle('Position',[caja(1),caja(2),caja(3),caja(4)],'EdgeColor','b','LineWidth',2);%esta linea encierra cada objeto en una caja
     else
          rectangle('Position',[caja(1),caja(2),caja(3),caja(4)],'EdgeColor','b','LineWidth',2);
     end
     objetos(k)
-    if(objetos(k).Perimeter^2/objetos(k).Area>100)%que valor anterior era 18
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'LLAVE ALEN','Color','r');
+    if(objetos(k).Perimeter^2/objetos(k).Area>100  && objetos(k).Solidity<0.35)%Solidity entre .23 y .29 en las pruebas
         LLAVE=LLAVE+1;
-    elseif(objetos(k).Perimeter^2/objetos(k).Area<=14.3)
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'RONDANA','Color','g');
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),sprintf('[%d] LLAVE ALLEN ',LLAVE),'Color','r');
+    elseif(objetos(k).Perimeter^2/objetos(k).Area<=14.3 && objetos(k).Perimeter^2/objetos(k).Area<26)
         RONDANA=RONDANA+1;
-    elseif(objetos(k).Perimeter^2/objetos(k).Area>24 & objetos(k).Perimeter^2/objetos(k).Area<50)%arreglar los demas rangos con operadores and
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'TORNILLO','Color','b');
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),sprintf('[%d] RONDANA',RONDANA),'Color','g');
+    elseif(objetos(k).Perimeter^2/objetos(k).Area>24 && objetos(k).Perimeter^2/objetos(k).Area<50)
         TORNILLO=TORNILLO+1;
-    elseif(objetos(k).Perimeter^2/objetos(k).Area>24)
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'ARGOLLA','Color','m');
-        ARGOLLA=ARGOLLA+1;
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),sprintf('[%d]TORNILLO',TORNILLO),'Color','b');
+    elseif(objetos(k).Perimeter^2/objetos(k).Area>24 && objetos(k).Perimeter^2/objetos(k).Area<107 ) 
+        ARMELLA=ARMELLA+1;
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),sprintf('[%d]ARMELLA',ARMELLA),'Color','m');
     else
-        text(objetos(k).Centroid(1),objetos(k).Centroid(2),'COLA DE PATO','Color','y');
         DUCK=DUCK+1;
-
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),sprintf('[%d]COLA DE PATO',DUCK),'Color','y');
     end
 end
-total=RONDANA+LLAVE+TORNILLO+ARGOLLA+DUCK;
-disp('NUMERO DE OBJETOS EN TOTAL: ')
-disp(total)
+%clc %opcional
+tot=RONDANA+LLAVE+TORNILLO+ARMELLA+DUCK;
+disp('TOTAL DE OBJETOS: ')
+disp(tot);
 disp('RONDANA: ')
 disp(RONDANA)
 disp('LLAVE: ')
 disp(LLAVE);
 disp('TORNILLO: ')
 disp(TORNILLO);
-disp('ARGOLLA: ')
-disp(ARGOLLA);
+disp('ARMELLA: ')
+disp(ARMELLA);
 disp('COLA DE PATO: ')
 disp(DUCK);
+
+
+bandera=input('Probar con otra imagen. 1. Si /// 0.No \n');
+end
+disp('Fin de Programa...');
