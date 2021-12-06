@@ -1,0 +1,14 @@
+Proyecto Final.
+
+1. Identificacion de Imagenes con 4 clases por lo menos haciendo uso de K-means.
+2. Contornear cada clase de la imagen y poner leyenda del nombre de la clase.
+3. Si la imagen cuenta con alguno de las clases (elementos) pero no con todos,
+    poner un nombre parecido.
+    
+4. Elementos principales a estudiar
+     Playa
+     Pradera
+     Montaña
+     
+     con un maximo de 4 clases.
+     Ejemplo: Playa -> Arena, Agua, Cielo y Rocas.
