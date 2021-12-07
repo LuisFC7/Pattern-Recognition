@@ -5,7 +5,7 @@ warning off all
 %Programa para identificar objetos geometricos de una imagen
 bandera=1;
 while bandera == 1
-[fname,user_canc]=imgetfile('InitialPath','direccion de carpeta de las iamgenes');%meter aqui la ruta completa donde tengas las imagenes en tu pc
+[fname,user_canc]=imgetfile('InitialPath','C:\Users\Lenovo\Documents\Semestre 21-2\Pattern Recognition\Imagenes');
 figure(1)
 a=imread(fname);%aqui señalar ubicacion de imagen
 imshow(a)
@@ -15,6 +15,7 @@ imshow(c)
 
 %extraccion de caracteristicas para el reconocimiento de los patrones
 %mediante propiedades geometricas
+
 objetos=regionprops(c,'Perimeter','Area','Centroid','BoundingBox', 'Solidity');
 
 RONDANA=0;
@@ -22,16 +23,20 @@ LLAVE=0;
 TORNILLO=0;
 ARMELLA=0;
 DUCK=0;
+UNKW=0;
 
 for k=1:length(objetos)
-    caja=objetos(k).BoundingBox;      
+    caja=objetos(k).BoundingBox;
     if(objetos(k).Area>1000)
         rectangle('Position',[caja(1),caja(2),caja(3),caja(4)],'EdgeColor','b','LineWidth',2);%esta linea encierra cada objeto en una caja
     else
          rectangle('Position',[caja(1),caja(2),caja(3),caja(4)],'EdgeColor','b','LineWidth',2);
     end
     objetos(k)
-    if(objetos(k).Perimeter^2/objetos(k).Area>100  && objetos(k).Solidity<0.35)%Solidity entre .23 y .29 en las pruebas
+    if(objetos(k).Area==21981 || objetos(k).Area==10917)
+        UNKW=UNKW+1;
+        text(objetos(k).Centroid(1),objetos(k).Centroid(2),sprintf('[%d]OBJETO DESCONOCIDO',UNKW),'Color','m');
+    elseif(objetos(k).Perimeter^2/objetos(k).Area>100  && objetos(k).Solidity<0.35)%Solidity entre .23 y .29 en las pruebas
         LLAVE=LLAVE+1;
         text(objetos(k).Centroid(1),objetos(k).Centroid(2),sprintf('[%d] LLAVE ALLEN ',LLAVE),'Color','r');
     elseif(objetos(k).Perimeter^2/objetos(k).Area<=14.3 && objetos(k).Perimeter^2/objetos(k).Area<26)
@@ -49,7 +54,7 @@ for k=1:length(objetos)
     end
 end
 %clc %opcional
-tot=RONDANA+LLAVE+TORNILLO+ARMELLA+DUCK;
+tot=RONDANA+LLAVE+TORNILLO+ARMELLA+DUCK+UNKW;
 disp('TOTAL DE OBJETOS: ')
 disp(tot);
 disp('RONDANA: ')
@@ -62,7 +67,8 @@ disp('ARMELLA: ')
 disp(ARMELLA);
 disp('COLA DE PATO: ')
 disp(DUCK);
-
+disp('OBJETOS DESCONOCIDOS:');
+disp(UNKW);
 
 bandera=input('Probar con otra imagen. 1. Si /// 0.No \n');
 end
