@@ -1,0 +1,127 @@
+clc
+clear all
+close all
+warning off all
+
+color = {'or','og','ob','oc','om','oy'};
+bandera=1;
+while bandera==1;
+
+    [fname,user_canc]=imgetfile('InitialPath','C:\Users\Lenovo\Documents\Semestre 21-2\Pattern Recognition\Imagenes');
+    h=imread(fname);
+    pt=2000;
+    [m,n]=size(h);
+    %m=alto
+    %n=ancho/3
+    ancho=n/3;
+    alto=m;
+    
+    figure(2)
+    dato=imref2d(size(h));
+    imshow(h,dato)
+   
+    %Puntos aleatorios
+    c1X=randi([0,ancho],2,pt);
+    c1Y=randi([0,alto],2,pt);
+    %Función que decida cuantas clases manejar
+    %Con impixel detectar variaciones color 
+    valork=input('\nIngrese el valor de K: ');
+    Z1=impixel(h,c1X(1,:),c1Y(2,:))
+
+    if(Z1(:,1)==250 && Z1(:,2)==247 && Z1(:,3)==239)
+        disp('Playa');
+    end;
+
+    disp('   Espere...');
+    clasm=[];
+    
+    for f0=1:valork
+       clasm(:,:,f0)=Z1(f0,:);       
+       
+    end
+    for f1=valork+1:pt
+            dist=[];
+           for f2=1:valork
+                medK(:,:,f2)=[mean(clasm(:,1,f2),'omitnan'),mean(clasm(:,2,f2),'omitnan'),mean(clasm(:,3,f2),'omitnan')];
+                au=sqrt( (medK(:,1,f2)-Z1(f1,1) )^2 +(medK(:,2,f2)-Z1(f1,2) )^2 +(medK(:,3,f2)-Z1(f1,3) )^2    );
+                dist=[dist au];
+           end
+            dmin=min(min(dist));
+            dfinal=find(dmin==dist);
+
+           for f3=1:valork
+              if(dfinal==f3) 
+                clasm((f1-valork+1),:,dfinal)=Z1(f1,:);
+                
+              else
+                clasm((f1-valork+1),:,f3)=NaN;
+              end
+           end
+        
+        end
+    flag=1;
+    medR=NaN;
+    it=1;
+    while flag==1
+       for f1=1:pt
+            dist=[];
+           for f2=1:valork
+                medK(:,:,f2)=[mean(clasm(:,1,f2),'omitnan'),mean(clasm(:,2,f2),'omitnan'),mean(clasm(:,3,f2),'omitnan')];
+                au=sqrt( (medK(:,1,f2)-Z1(f1,1) )^2 +(medK(:,2,f2)-Z1(f1,2) )^2 +(medK(:,3,f2)-Z1(f1,3) )^2    );
+                dist=[dist au];
+           end
+            dmin=min(min(dist));
+            dfinal=find(dmin==dist);
+            clasn(f1,1)=c1X(1,f1);
+            clasn(f1,2)=c1Y(2,f1);
+            if (dfinal<1)
+                disp(dmin);
+            end
+
+           for f3=1:valork
+              if(dfinal==f3) 
+                clasm((f1),:,dfinal)=Z1(f1,:);
+                clasn(f1,3)=dfinal;
+              else
+                clasm((f1),:,f3)=NaN;
+              end
+           end
+        
+        end
+        it=it+1;
+        if medR==medK
+            flag=0;
+        else
+            medR=medK;
+            clasn=[];
+        end
+    end
+    disp('Iteraciones:');
+    disp(it)
+    
+    grid on
+    hold on
+    txtlegend={};
+    title('K-Means');
+    disp('   Graficando...');
+    for f1=1:pt
+        if(clasn(f1,3)==0)
+            plot(clasn(f1,1),clasn(f1,2),'ok','MarkerSize',10);
+        else
+            plot(clasn(f1,1),clasn(f1,2),color{clasn(f1,3)},'MarkerSize',10);
+        end
+%         if f1<=valork
+%             name=sprintf('Clase %d',f1);
+%             txtlegend=[txtlegend,name];
+%         end
+    end
+%     legend(txtlegend);
+   
+    bandera=input('\n¿Desea volver a intentarlo? 0 = No / 1 = Si \n');
+    if bandera==1
+    cla(2);
+    imshow(h,dato);
+    end
+end
+   
+    disp('fin del proceso...');
