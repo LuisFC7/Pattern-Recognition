@@ -2,7 +2,7 @@ Proyecto Final.
      
      Actualización del 10/12/2021, 16:20 Hrs.
      
-     En el archivo nuevo subido, se implmento entre las lineas 31 a 38 ciclos for, los cuales recorren
+     En el archivo nuevo subido (Actualizacion), se implemento entre las lineas 31 a 38 ciclos for, los cuales recorren
      las muestras de pixeles generadas por puntos aleatorios, si un vector de la matriz Z1 contiene 
      los valores indicados, existe una clase arena y por lo tanto se asemeja a una playa. Probar con las ultimas imagenes subidas.
      
