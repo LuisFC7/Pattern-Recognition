@@ -29,23 +29,40 @@ while bandera==1;
     
     cont=0;
     cont2=0;
+    cont3=0;
+
     %AREA DE PREENTRENO
     %Nueva Actualización. LEER GIT
     %R= 243 a 255 /// G=236 a 251 ///B= 229 a 249  
     for i=1:2000
         for j=1:1
             if(Z1(i,j)>=236 && Z1(i,j)<=255 && Z1(i,j+1)>=216 && Z1(i,j+1)<=251 && Z1(i,j+2)>=191 && Z1(i,j+2)<=249)%Area de playa %PC ->ARENA
-               if(Z1(i,j)>=49 && Z1(i,j)<=87 && Z1(i,j+1)>=140 && Z1(i,j+1)<=180 && Z1(i,j+2)>=152 && Z1(i,j+2)<=187 && cont>100)%SC -> MAR SI EXISTEN MAS DE 100 PTS
-                    %AQUI IMPLEMENTAR SEGUNDA CONDICION
-                    cont=cont+1;
-                    disp('Playa');
-                    valork=4;
-               end
-            else if(Z1(i,j)>=73 && Z1(i,j)<=137 && Z1(i,j+1)>=119 && Z1(i,j+1)<=159 && Z1(i,j+2)>=18 && Z1(i,j+2)<=94 && cont2>150)%Aqui implementar %R=73 A 137   ///G=119 a 159   ///B=18 a 94
+               %if(Z1(i,j)>=49 && Z1(i,j)<=87 && Z1(i,j+1)>=140 && Z1(i,j+1)<=180 && Z1(i,j+2)>=152 && Z1(i,j+2)<=187)%SC -> MAR SI EXISTEN MAS DE 100 PTS
+                   cont=cont+1;
+                    if(cont>20)%AQUI IMPLEMENTAR SEGUNDA CONDICION
+                        cont=cont+1;
+                        disp('Playa');
+                        valork=4;
+                    end
+               %end
+
+             elseif(Z1(i,j)>=70 && Z1(i,j)<=187 && Z1(i,j+1)>=78 && Z1(i,j+1)<=176 && Z1(i,j+2)>=106 && Z1(i,j+2)<=180)
+                    cont3=cont3+1;
+                    if(cont3>=100)    
+                        cont3=cont3+1;
+                        disp('Montaña');
+                        valork=3;
+                    end;
+
+            elseif(Z1(i,j)>=73 && Z1(i,j)<=137 && Z1(i,j+1)>=119 && Z1(i,j+1)<=159 && Z1(i,j+2)>=18 && Z1(i,j+2)<=94)%Aqui implementar %R=73 A 137   ///G=119 a 159   ///B=18 a 94
                     cont2=cont2+1;
-                    disp('Pradera');
-                    valork=2;
-                end;
+                    if(cont2>=150)    
+                        cont2=cont2+1;
+                        disp('Pradera');
+                        valork=2;
+                    end;
+            else
+                disp('Imagen Perteneciente a otro grupo');
             end
         end
     end
