@@ -1,14 +1,18 @@
 Proyecto Final.
      
-     Actualización del 10/12/2021, 16:20 Hrs.
+     Actualización del 11/12/2021, 20:16 Hrs.
      
-     En el archivo nuevo subido (Actualizacion), se implemento entre las lineas 31 a 38 ciclos for, los cuales recorren
-     las muestras de pixeles generadas por puntos aleatorios, si un vector de la matriz Z1 contiene 
-     los valores indicados, existe una clase arena y por lo tanto se asemeja a una playa. Probar con las ultimas imagenes subidas.
+     Ya se encuentra disponible la segunda versión del proyecto, archivo (Actualización), 
+     el programa ya detecta los 3 paisajes y el paisaje que no pertenece al grupo de estudio, 
+     los mensajes se muestran por consola y se deben probar con la base de datos mas reciente,
+     NOTA: los mensajes se muestran por consola.
      
-     Se esta trabajando en las demas clases para, indicar a K-means cuantas clases trabajar (entrenamiento).
+     TO DO:
+     Falta graficar el contorno de cada clase y poner una leyenda de cada clase 
+     EJEMPLO: ARENA, CIELO, MAR, VEGETACION.
      
-     Posible implementación de algoritmo de Lloyd.
+     Dudas por messenguer:)
+     
      
      SUBIR DESCRIPCION SI HAY MODIFICACION DE ARCHIVOS.
 
