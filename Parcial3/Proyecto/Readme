@@ -1,16 +1,11 @@
 Proyecto Final.
      
-     Actualización del 11/12/2021, 20:16 Hrs.
+     Actualización del 13/12/2021, 16:37 Hrs.
      
-     Ya se encuentra disponible la segunda versión del proyecto, archivo (Actualización), 
-     el programa ya detecta los 3 paisajes y el paisaje que no pertenece al grupo de estudio, 
-     los mensajes se muestran por consola y se deben probar con la base de datos mas reciente,
-     NOTA: los mensajes se muestran por consola.
-     
-     TO DO:
-     Falta graficar el contorno de cada clase y poner una leyenda de cada clase 
-     EJEMPLO: ARENA, CIELO, MAR, VEGETACION.
-     
+     Se subió otra versión del proyecto donde se esta implemetando la parte de las graficas,
+     especificamente en los contornos de cada clase. 
+     Lineas 160 a 164.
+    
      Dudas por messenguer:)
      
      
