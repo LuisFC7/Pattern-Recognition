@@ -1,0 +1,174 @@
+clc
+clear all
+close all
+warning off all
+
+color = {'or','og','ob','oc','om','oy'};
+bandera=1;
+while bandera==1;
+
+    [fname,user_canc]=imgetfile('InitialPath','C:\Users\Lenovo\Documents\Semestre 21-2\Pattern Recognition');
+    h=imread(fname);
+    pt=2000;
+    [m,n]=size(h);
+    %m=alto
+    %n=ancho/3
+    ancho=n/3;
+    alto=m;
+    figure(2)
+    dato=imref2d(size(h));
+    imshow(h,dato)
+   
+    %Puntos aleatorios
+    c1X=randi([0,ancho],2,pt);
+    c1Y=randi([0,alto],2,pt);
+    %Función que decida cuantas clases manejar
+    %Con impixel detectar variaciones color 
+    %valork=input('\nIngrese el valor de K: ');
+    Z1=impixel(h,c1X(1,:),c1Y(2,:));
+    
+    cont=0;
+    cont2=0;
+    cont3=0;
+
+    %VALORES PARA MONTAÑA R= 70 a 187 /// G=78 a 176 ///B=106 a 180
+    %AREA DE PREENTRENO
+    %Nueva Actualización. LEER GIT
+    %R= 243 a 255 /// G=236 a 251 ///B= 229 a 249  
+    for i=1:2000
+        for j=1:1
+            if(Z1(i,j)>=236 && Z1(i,j)<=255 && Z1(i,j+1)>=216 && Z1(i,j+1)<=251 && Z1(i,j+2)>=191 && Z1(i,j+2)<=249)%Area de playa %PC ->ARENA
+               %if(Z1(i,j)>=49 && Z1(i,j)<=87 && Z1(i,j+1)>=140 && Z1(i,j+1)<=180 && Z1(i,j+2)>=152 && Z1(i,j+2)<=187)%SC -> MAR SI EXISTEN MAS DE 100 PTS
+                   cont=cont+1;
+                    if(cont>20)%AQUI IMPLEMENTAR SEGUNDA CONDICION
+                        cont=cont+1;
+                        disp('Playa');
+                        valork=4;
+                        letrero='Playa';
+                    end
+               %end
+
+             elseif(Z1(i,j)>=70 && Z1(i,j)<=187 && Z1(i,j+1)>=78 && Z1(i,j+1)<=176 && Z1(i,j+2)>=106 && Z1(i,j+2)<=180)
+                    cont3=cont3+1;
+                    if(cont3>=100)    
+                        cont3=cont3+1;
+                        disp('Montaña');
+                        valork=3;
+                        letrero='Montaña';
+                    end;
+
+            elseif(Z1(i,j)>=73 && Z1(i,j)<=137 && Z1(i,j+1)>=119 && Z1(i,j+1)<=159 && Z1(i,j+2)>=18 && Z1(i,j+2)<=94)%Aqui implementar %R=73 A 137   ///G=119 a 159   ///B=18 a 94
+                    cont2=cont2+1;
+                    if(cont2>=150)    
+                        cont2=cont2+1;
+                        disp('Pradera');
+                        valork=2;
+                        letrero='Pradera';
+                    end;
+           % else
+               % disp('Imagen Perteneciente a otro grupo');
+                %valork=0;
+            end
+        end
+    end
+
+    disp('   Espere...');
+    clasm=[];
+    
+    for f0=1:valork
+       clasm(:,:,f0)=Z1(f0,:);       
+       
+    end
+    for f1=valork+1:pt
+            dist=[];
+           for f2=1:valork
+                medK(:,:,f2)=[mean(clasm(:,1,f2),'omitnan'),mean(clasm(:,2,f2),'omitnan'),mean(clasm(:,3,f2),'omitnan')];
+                au=sqrt( (medK(:,1,f2)-Z1(f1,1) )^2 +(medK(:,2,f2)-Z1(f1,2) )^2 +(medK(:,3,f2)-Z1(f1,3) )^2    );
+                dist=[dist au];
+           end
+            dmin=min(min(dist));
+            dfinal=find(dmin==dist);
+
+           for f3=1:valork
+              if(dfinal==f3) 
+                clasm((f1-valork+1),:,dfinal)=Z1(f1,:);
+                
+              else
+                clasm((f1-valork+1),:,f3)=NaN;
+              end
+           end
+        
+        end
+    flag=1;
+    medR=NaN;
+    it=1;
+    while flag==1
+       for f1=1:pt
+            dist=[];
+           for f2=1:valork
+                medK(:,:,f2)=[mean(clasm(:,1,f2),'omitnan'),mean(clasm(:,2,f2),'omitnan'),mean(clasm(:,3,f2),'omitnan')];
+                au=sqrt( (medK(:,1,f2)-Z1(f1,1) )^2 +(medK(:,2,f2)-Z1(f1,2) )^2 +(medK(:,3,f2)-Z1(f1,3) )^2    );
+                dist=[dist au];
+           end
+            dmin=min(min(dist));
+            dfinal=find(dmin==dist);
+            clasn(f1,1)=c1X(1,f1);
+            clasn(f1,2)=c1Y(2,f1);
+            if (dfinal<1)
+                disp(dmin);
+            end
+
+           for f3=1:valork
+              if(dfinal==f3) 
+                clasm((f1),:,dfinal)=Z1(f1,:);
+                clasn(f1,3)=dfinal;
+              else
+                clasm((f1),:,f3)=NaN;
+              end
+           end
+        
+        end
+        it=it+1;
+        if medR==medK
+            flag=0;
+        else
+            medR=medK;
+            clasn=[];
+        end
+    end
+    disp('Iteraciones:');
+    disp(it)
+    
+    grid on
+    hold on
+    txtlegend={};
+    title(letrero);%%%%
+    disp('   Graficando...');
+    for f1=1:pt
+        if(clasn(f1,3)==0)
+            plot(clasn(f1,1),clasn(f1,2),'ok','MarkerSize',10);
+        else
+            plot(clasn(f1,1),clasn(f1,2),color{clasn(f1,3)},'MarkerSize',10);
+        end
+%         if f1<=valork
+%             name=sprintf('Clase %d',f1);
+%             txtlegend=[txtlegend,name];
+%         end
+    end
+%     legend(txtlegend);
+    
+    I=rgb2gray(h);
+    B=imcontour(I,valork);
+    figure;
+    C = imfuse(B,h,'falsecolor','Scaling','joint','ColorChannels',[1 2 0]);
+    imshow(C);
+
+    bandera=input('\n¿Desea volver a intentarlo? 0 = No / 1 = Si \n');
+    if bandera==1
+    cla(2);
+    imshow(h,dato);
+    end
+end
+   %AQUI SE PRUEBAN LAS IMAGENES EN CONTORNO
+   
+    disp('fin del proceso...');
