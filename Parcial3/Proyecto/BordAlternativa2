@@ -1,0 +1,138 @@
+clc
+clear all
+close all
+warning off all
+
+color = {'red', 'green', 'blue', 'cyan', 'magenta', 'yellow','black', 'white'};
+% bandera=1;
+% while bandera==1;
+
+[fname,user_canc]=imgetfile('InitialPath','/Users/orozcos/Downloads/Banco de Imagenes');
+h=imread(fname);%feature
+pt=2000;
+ex = size(h, 1);
+ey = size(h, 2);
+er = size(h, 3);
+figure(1); 
+dato=imref2d(size(h));
+imshow(h,dato) 
+title('Original');
+hold on
+
+hi=rgb2gray(h);
+
+
+cnt= (size(h));
+corr= (size(h));
+hom= (size(h));
+
+offsets = [0 1];%; -1 1;-1 0;-1 -1];
+
+for fy=1:ey
+   for fx=1:ex 
+        if(mod(fx,20)==0 && mod(fy,20)==0 && fy>=10 && fy<=(ey-10) && fx>=10 && fx<=(ex-10))
+            
+            mask = h( fx-9:fx+9 , fy-9:fy+9 );
+            [glcm,SI] = graycomatrix(mask,'Offset',offsets); 
+            stats = graycoprops(glcm);            
+            cnt(fx,fy)=stats.Contrast;  
+            corr(fx,fy)=stats.Correlation;  
+            hom(fx,fy)=stats.Homogeneity;              
+        else
+            cnt(fx,fy)=NaN;  
+            corr(fx,fy)=NaN;  
+            hom(fx,fy)=NaN;   
+        end   
+   end
+end
+
+c1X=randi([0,ex],2,pt);
+c1Y=randi([0,ey],2,pt);
+ 
+valork=4;
+Z1=impixel(h,c1X(1,:),c1Y(2,:));
+
+hg=rgb2gray(h);
+
+
+cont=0;
+cont2=0;
+cont3=0;
+cont4=0;
+
+[X,Y] = meshgrid(1:ey,1:ex);
+   
+valAmB='Otro';
+
+for i=1:pt
+    for j=1:1
+        if(Z1(i,j)>=236 && Z1(i,j)<=255 && Z1(i,j+1)>=216 && Z1(i,j+1)<=251 && Z1(i,j+2)>=191 && Z1(i,j+2)<=249)%Area de playa %PC ->ARENA          
+               cont=cont+1;
+                if(cont>20)
+                    cont=cont+1;
+                end
+         elseif(Z1(i,j)>=49 && Z1(i,j)<=87 && Z1(i,j+1)>=140 && Z1(i,j+1)<=180 && Z1(i,j+2)>=152 && Z1(i,j+2)<=187)%->Mar, creo
+             cont4=cont4+1;
+         elseif(Z1(i,j)>=70 && Z1(i,j)<=187 && Z1(i,j+1)>=78 && Z1(i,j+1)<=176 && Z1(i,j+2)>=106 && Z1(i,j+2)<=180)
+                cont3=cont3+1;
+                if(cont3>=100)    
+                    cont3=cont3+1;
+                end
+        elseif(Z1(i,j)>=73 && Z1(i,j)<=137 && Z1(i,j+1)>=119 && Z1(i,j+1)<=159 && Z1(i,j+2)>=18 && Z1(i,j+2)<=94)%Aqui implementar %R=73 A 137   ///G=119 a 159   ///B=18 a 94
+                cont2=cont2+1;
+                if(cont2>=150)    
+                    cont2=cont2+1;
+                end
+        end
+
+
+
+    end
+end
+
+if cont3>=0.08*pt
+   cont3=cont3+cont4; 
+end
+
+vCount=[cont cont2 cont3]    
+max01=max(max(vCount));
+preent=find(vCount==max01);
+if(vCount(preent)>= (0.045*pt))
+    switch preent            
+        case 1
+            valAmB='Playa';    
+            valork=4;
+        case 2
+            valAmB='Pradera';
+            valork=2;
+        case 3
+            valAmB='Montaña';  
+            valork=3;
+    end
+
+else        
+    valAmB='Otro';
+end
+
+disp('La imagen pertenece al grupo:');
+disp(valAmB);
+
+disp('   Espere...');
+
+featureSet = cat(3,h,hi,cnt,corr,hom,X,Y);
+
+[clasm,Centers] = imsegkmeans(featureSet,valork,'NormalizeInput',true); %jh = labeloverlay(h,clasm); imshow(jh);
+txtlegend={};
+for kfam=1:valork
+    [Bx,L] = bwboundaries(clasm==kfam,'noholes');
+    hold on
+    for k = 1:length(Bx)
+       boundary = Bx{k};
+       plot(boundary(:,2), boundary(:,1), color{kfam}, 'LineWidth', 5)
+    end
+    name=sprintf('Clase r%i g%i b%i',Centers(kfam,1),Centers(kfam,2),Centers(kfam,3));
+    fprintf('Clase %i r: %i g: %i b: %i\n',kfam, Centers(kfam,1),Centers(kfam,2),Centers(kfam,3));
+    txtlegend=[txtlegend,name];
+end
+legend(txtlegend);
+disp('final');
