@@ -23,8 +23,11 @@ hi=rgb2gray(h);
 
 
 cnt= (size(h));
+    cnt(1:ex , 1:ey)=NaN;
 corr= (size(h));
+    corr(1:ex , 1:ey)=NaN;
 hom= (size(h));
+    hom(1:ex , 1:ey)=NaN;
 
 offsets = [0 1];%; -1 1;-1 0;-1 -1];
 
@@ -35,16 +38,15 @@ for fy=1:ey
             mask = h( fx-9:fx+9 , fy-9:fy+9 );
             [glcm,SI] = graycomatrix(mask,'Offset',offsets); 
             stats = graycoprops(glcm);            
-            cnt(fx,fy)=stats.Contrast;  
-            corr(fx,fy)=stats.Correlation;  
-            hom(fx,fy)=stats.Homogeneity;              
-        else
-            cnt(fx,fy)=NaN;  
-            corr(fx,fy)=NaN;  
-            hom(fx,fy)=NaN;   
+            cnt(fx-9:fx+9 , fy-9:fy+9)=stats.Contrast;  
+            corr(fx-9:fx+9 , fy-9:fy+9)=stats.Correlation;  
+            hom(fx-9:fx+9 , fy-9:fy+9)=stats.Homogeneity;              
         end   
    end
 end
+cnt=cnt*100;
+corr=corr*100;
+hom=hom*100;
 
 c1X=randi([0,ex],2,pt);
 c1Y=randi([0,ey],2,pt);
@@ -97,7 +99,7 @@ end
 vCount=[cont cont2 cont3]    
 max01=max(max(vCount));
 preent=find(vCount==max01);
-if(vCount(preent)>= (0.045*pt))
+if(vCount(preent)>= (0.02*pt))
     switch preent            
         case 1
             valAmB='Playa';    
@@ -121,7 +123,7 @@ disp('   Espere...');
 
 featureSet = cat(3,h,hi,cnt,corr,hom,X,Y);
 
-[clasm,Centers] = imsegkmeans(featureSet,valork,'NormalizeInput',true); %jh = labeloverlay(h,clasm); imshow(jh);
+[clasm,Centers] = imsegkmeans(featureSet,valork); %jh = labeloverlay(h,clasm); imshow(jh);
 txtlegend={};
 for kfam=1:valork
     [Bx,L] = bwboundaries(clasm==kfam,'noholes');
