@@ -136,41 +136,46 @@ while bandera==1;
             clasn=[];
         end
     end
-    disp('Iteraciones:');
-    disp(it)
+    %disp('Iteraciones:');
+    %disp(it)
     
+    vCount=[cont cont2 cont3]  ;  
+    max01=max(max(vCount));
+    preent=find(vCount==max01);
+    if(vCount(preent)>= (0.045*pt))
+        switch preent            
+            case 1
+                valAmB='Playa';    
+                valork=4;
+            case 2
+                valAmB='Pradera';
+                valork=2;
+            case 3
+                valAmB='Montaña';  
+                valork=3;
+        end
+
+    else        
+        valAmB='Otro';
+    end
+
+    disp('La imagen pertenece al grupo:');
+    disp(valAmB);
+    amb=sprintf('La imagen pertenece al grupo: %s',valAmB);
+    title(amb);
     
     grid on
     hold on
     txtlegend={};
     title(letrero);%%%%
     disp('   Graficando...');
-    for f1=1:pt
-        if(clasn(f1,3)==0)
-            plot(clasn(f1,1),clasn(f1,2),'ok','MarkerSize',10);
-        else
-            plot(clasn(f1,1),clasn(f1,2),color{clasn(f1,3)},'MarkerSize',10);
-        end
-%         if f1<=valork
-%             name=sprintf('Clase %d',f1);
-%             txtlegend=[txtlegend,name];
-%         end
-    end
-%     legend(txtlegend);
-    
-    %I=rgb2gray(h);
-    %B=imcontour(I,valork);
-    %figure(3);
-    %C = imfuse(B,h,'falsecolor','Scaling','joint','ColorChannels',[1 2 0]);
-    %imshow(C);
     
     figure(2)
     I=rgb2gray(h);
     B=imcontour(I,valork);
-    figure(3)
-    C=imfuse(B,k);
-  
-
+    %figure(3)
+    C=imfuse(B,h);
+    
     bandera=input('\n¿Desea volver a intentarlo? 0 = No / 1 = Si \n');
     if bandera==1
     cla(2);
