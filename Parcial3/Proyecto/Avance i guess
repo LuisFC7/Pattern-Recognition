@@ -161,13 +161,12 @@ while bandera==1;
 
     disp('La imagen pertenece al grupo:');
     disp(valAmB);
-    amb=sprintf('La imagen pertenece al grupo: %s',valAmB);
-    title(amb);
     
     grid on
     hold on
     txtlegend={};
-    title(letrero);%%%%
+    amb=sprintf('La imagen pertenece al grupo: %s',valAmB);
+    title(amb);
     disp('   Graficando...');
     
     figure(2)
