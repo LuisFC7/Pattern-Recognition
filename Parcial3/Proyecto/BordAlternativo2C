@@ -121,6 +121,8 @@ disp(valAmB);
 
 disp('   Espere...');
 
+disp('   Espere...');
+ amb=sprintf('La imagen pertenece al grupo: %s',valAmB);
 if(valork==4)
         txt1='Arena \rightarrow';
         txt2='\leftarrow Cielo \rightarrow';
