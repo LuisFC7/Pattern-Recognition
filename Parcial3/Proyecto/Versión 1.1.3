@@ -8,7 +8,7 @@ bandera=1;
 while bandera==1;
 
     figure(1)
-    [fname,user_canc]=imgetfile('InitialPath','');
+    [fname,user_canc]=imgetfile('InitialPath','C:\Users\Lenovo\Documents\Semestre 21-2\Pattern Recognition');
     h=imread(fname);
     pt=2000;
     [m,n]=size(h);
@@ -36,7 +36,7 @@ while bandera==1;
     %AREA DE PREENTRENO
     %Nueva Actualización. LEER GIT
     %R= 243 a 255 /// G=236 a 251 ///B= 229 a 249  
-    for i=1:2000
+    for i=1:pt
         for j=1:1
             if(Z1(i,j)>=236 && Z1(i,j)<=255 && Z1(i,j+1)>=216 && Z1(i,j+1)<=251 && Z1(i,j+2)>=191 && Z1(i,j+2)<=249)%Area de playa %PC ->ARENA
                %if(Z1(i,j)>=49 && Z1(i,j)<=87 && Z1(i,j+1)>=140 && Z1(i,j+1)<=180 && Z1(i,j+2)>=152 && Z1(i,j+2)<=187)%SC -> MAR SI EXISTEN MAS DE 100 PTS
@@ -139,21 +139,73 @@ while bandera==1;
     %disp('Iteraciones:');
     %disp(it)
     
-   disp('La imagen pertenece al grupo:');
-    disp(letrero);
+    vCount=[cont cont2 cont3]  ;  
+    max01=max(max(vCount));
+    preent=find(vCount==max01);
+    if(vCount(preent)>= (0.045*pt))
+        switch preent            
+            case 1
+                valAmB='Playa';    
+                valork=4;
+            case 2
+                valAmB='Pradera';
+                valork=2;
+            case 3
+                valAmB='Montaña';  
+                valork=3;
+        end
+
+    else        
+        valAmB='Otro';
+    end
+
+    disp('La imagen pertenece al grupo:');
+    disp(valAmB);
+    amb=sprintf('La imagen pertenece al grupo: %s',valAmB);
+    title(amb);
     
-    grid on
+    %grid on
     hold on
     txtlegend={};
-    amb=sprintf('La imagen pertenece al grupo: %s',letrero);
-    title(amb);
+    title(amb);%%%%
     disp('   Graficando...');
     
     %figure(2)
     I=rgb2gray(h);
     B=imcontour(I,valork);
+
+    if(valork==4)
+        txt1='Arena \rightarrow';
+        txt2='\leftarrow Cielo \rightarrow';
+        txt3='Mar \rightarrow';
+        txt4='Vegetación';
+        text(680,220,txt1);
+        text(400,50,txt2);
+        text(500,200,txt3);
+        text(300,150,txt4);
+    else if(valork==2)
+        txt1='\leftarrow Cielo \rightarrow';
+        txt2='\leftarrow Pasto \rightarrow';
+        text(400,50,txt1);
+        text(300,350,txt2);
+        
+        else if(valork==3)
+            txt1=' Cielo \rightarrow';
+            txt2='\leftarrow Montaña \rightarrow';
+            txt3='\leftarrow Vegetación \rightarrow';
+        
+            text(50,50,txt1);
+            text(350,180,txt2);
+            text(400,350,txt3);
+        
+             end;
+        end;
+
+     end;
+
     figure(3)
     C=imfuse(B,h);
+    %%%%AQUI SE IMPLEMENTAN ALGUNOS LETRERO
     imshow(C)
     
     bandera=input('\n¿Desea volver a intentarlo? 0 = No / 1 = Si \n');
