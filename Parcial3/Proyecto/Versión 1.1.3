@@ -139,35 +139,14 @@ while bandera==1;
     %disp('Iteraciones:');
     %disp(it)
     
-    vCount=[cont cont2 cont3]  ;  
-    max01=max(max(vCount));
-    preent=find(vCount==max01);
-    if(vCount(preent)>= (0.045*pt))
-        switch preent            
-            case 1
-                valAmB='Playa';    
-                valork=4;
-            case 2
-                valAmB='Pradera';
-                valork=2;
-            case 3
-                valAmB='Montaña';  
-                valork=3;
-        end
-
-    else        
-        valAmB='Otro';
-    end
-
-    disp('La imagen pertenece al grupo:');
-    disp(valAmB);
-    amb=sprintf('La imagen pertenece al grupo: %s',valAmB);
-    title(amb);
+   disp('La imagen pertenece al grupo:');
+    disp(letrero);
     
     grid on
     hold on
     txtlegend={};
-    title(letrero);%%%%
+    amb=sprintf('La imagen pertenece al grupo: %s',letrero);
+    title(amb);
     disp('   Graficando...');
     
     %figure(2)
