@@ -13,18 +13,20 @@
      
      Ultima Actualización 14/12/2021
      
-     # Previews.
-     ![264242115_3023755537836675_5232592752001159202_n](https://user-images.githubusercontent.com/55300309/146113909-6baa2fb2-d649-49e7-92ca-21102bc81824.png)
-     
-     ![263791266_1338475503286579_3524041111932765994_n](https://user-images.githubusercontent.com/55300309/146114014-52bbcf03-d810-4f53-9409-c677c5da35e5.png)
-
-          
-     
-
-
      Colaborative Project, Read them.
      For any doubt about proyect or information
      tasks, you can contact me through.
+     
+     
+# Previews 
+     
+   ![264242115_3023755537836675_5232592752001159202_n](https://user-images.githubusercontent.com/55300309/146113909-6baa2fb2-d649-49e7-92ca-21102bc81824.png)
+     
+   ![263791266_1338475503286579_3524041111932765994_n](https://user-images.githubusercontent.com/55300309/146114014-52bbcf03-d810-4f53-9409-c677c5da35e5.png)
+
+     
+
+
+    
 
 ![descarga](https://user-images.githubusercontent.com/55300309/146112185-948fcdee-5af1-48ff-9675-b5a8636e8b79.png)
-
