@@ -1,4 +1,4 @@
-Proyecto Final.
+# Proyecto Final.
      En el archivo "Versión 1.1.5" se encuentra
      el proyecto final, para su compilación, usar 
      la base de imagenes mas actual,
